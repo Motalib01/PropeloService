@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using Propelo.Data;
+
 namespace Propelo
 {
     public class Program
@@ -13,6 +16,10 @@ namespace Propelo
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddDbContext<ApplicationDBContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
 
             var app = builder.Build();
 

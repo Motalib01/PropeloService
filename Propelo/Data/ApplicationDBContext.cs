@@ -9,6 +9,15 @@ namespace Propelo.Data
             : base(options)
         {
         }
+        public DbSet<Promoter> Promoters { get; set; }
+        public DbSet<Property> Properties { get; set; }
+        public DbSet<PropertyPicture> PropertyPictures { get; set; }
+        public DbSet<Apartment> Apartments { get; set; }
+        public DbSet<ApartmentPicture> ApartmentPictures { get; set; }
+        public DbSet<ApartmentDocument> ApartmentDocuments { get; set; }
+        public DbSet<Area> Areas { get; set; }
+        public DbSet<Setting> Settings { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
