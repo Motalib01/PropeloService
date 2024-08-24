@@ -1,0 +1,24 @@
+﻿namespace Propelo.Models
+{
+    public class Apartment
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int RoomsNumbery { get; set; }
+        public int Floor { get; set; }
+        public int Surface { get; set; }
+        public string Description { get; set; }
+
+        //garage and terrain 
+
+        //many to one
+        public int PropertyId { get; set; }
+        public Property Property { get; set; }
+
+        //one to many
+        public ICollection<Area> Areas { get; set; } 
+        public ICollection<ApartmentDocument> ApartmentDocuments { get; set; } 
+        public ICollection<ApartmentPicture> ApartmentPictures { get; set; }
+
+    }
+}
