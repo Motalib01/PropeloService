@@ -5,7 +5,7 @@ namespace Propelo.Interfaces
     //Mabey
     public interface IAreaRepository
     {
-        ICollection<Area> GetAreas(int ApartmentId);
+        ICollection<Area> GetAreas();
         bool AreaExists(int areaId);
         bool CreateArea(Area area);
         bool UpdateArea(Area area);

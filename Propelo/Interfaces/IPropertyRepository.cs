@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Propelo.Models;
 
 namespace Propelo.Interfaces
 {

@@ -5,7 +5,7 @@ namespace Propelo.Interfaces
     //Mabey
     public interface IApartmentPictureRepository
     {
-        ICollection<ApartmentPicture> GetApartmentPictures(int apartmentId);
+        ICollection<ApartmentPicture> GetApartmentPictures();
         bool ApartmentPictureExists(int apartmentPictureId);
         bool CreateApartmentPicture(ApartmentPicture apartmentPicture);
         bool UpdateApartmentPicture(ApartmentPicture apartmentPicture);

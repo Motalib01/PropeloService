@@ -12,24 +12,31 @@ namespace Propelo.Repository
         {
             _context = context;
         }
+        public ICollection<Promoter> GetPromoters()
+        {
+            return _context.Promoters.OrderBy(p => p.Id).ToList();
+        }
         public bool CreatePromoter(Promoter promoter)
         {
-            throw new NotImplementedException();
+            _context.Add(promoter);
+            return Save();
         }
 
         public bool PromoterExists(int promoterId)
         {
-            throw new NotImplementedException();
+            return _context.Promoters.Any(p => p.Id == promoterId);
         }
 
         public bool Save()
         {
-            throw new NotImplementedException();
+            var save = _context.SaveChanges();
+            return save > 0 ? true : false;
         }
 
         public bool UpdatePromoter(Promoter promoter)
         {
-            throw new NotImplementedException();
+            _context.Update(promoter);
+            return Save();
         }
     }
 }

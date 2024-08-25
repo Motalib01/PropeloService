@@ -14,32 +14,36 @@ namespace Propelo.Repository
         }
         public bool ApartmentPictureExists(int apartmentPictureId)
         {
-            throw new NotImplementedException();
+            return _context.ApartmentPictures.Any(a =>a.Id == apartmentPictureId);
         }
 
         public bool CreateApartmentPicture(ApartmentPicture apartmentPicture)
         {
-            throw new NotImplementedException();
+            _context.Add(apartmentPicture);
+            return Save();
         }
 
         public bool DeleteApartmentPicture(ApartmentPicture apartmentPicture)
         {
-            throw new NotImplementedException();
+            _context.Remove(apartmentPicture);
+            return Save();
         }
 
-        public ICollection<ApartmentPicture> GetApartmentPictures(int apartmentId)
+        public ICollection<ApartmentPicture> GetApartmentPictures( )
         {
-            throw new NotImplementedException();
+            return _context.ApartmentPictures.OrderBy(a => a.Id).ToList();
         }
 
         public bool Save()
         {
-            throw new NotImplementedException();
+            var save = _context.SaveChanges();
+            return save > 0 ? true : false;
         }
 
         public bool UpdateApartmentPicture(ApartmentPicture apartmentPicture)
         {
-            throw new NotImplementedException();
+            _context.Update(apartmentPicture);
+            return Save();
         }
     }
 }

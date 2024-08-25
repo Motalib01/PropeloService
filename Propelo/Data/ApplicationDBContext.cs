@@ -26,20 +26,20 @@ namespace Propelo.Data
                 .HasMany(p=>p.properties)
                 .WithOne(p=>p.Promoter)
                 .HasForeignKey(p=>p.PromoterID)
-                .HasPrincipalKey(p=>p.ID);
+                .HasPrincipalKey(p=>p.Id);
 
             //Property relationships
             modelBuilder.Entity<Property>()
                 .HasMany(p=>p.Apartments)
                 .WithOne(p=>p.Property)
                 .HasForeignKey(p=>p.PropertyId)
-                .HasPrincipalKey(p=>p.ID);
+                .HasPrincipalKey(p=>p.Id);
 
             modelBuilder.Entity<Property>()
                 .HasMany(p=>p.PropertyPictures)
                 .WithOne(p=>p.Property)
                 .HasForeignKey(p=>p.PropertyId)
-                .HasPrincipalKey(p=>p.ID);
+                .HasPrincipalKey(p=>p.Id);
 
 
             //Apartment relationships

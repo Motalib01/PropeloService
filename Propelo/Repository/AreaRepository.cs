@@ -14,32 +14,36 @@ namespace Propelo.Repository
         }
         public bool AreaExists(int areaId)
         {
-            throw new NotImplementedException();
+            return _context.Areas.Any(a => a.Id == areaId);
         }
 
         public bool CreateArea(Area area)
         {
-            throw new NotImplementedException();
+            _context.Add(area);
+            return Save();
         }
 
         public bool DeleteArea(Area area)
         {
-            throw new NotImplementedException();
+            _context.Remove(area);
+            return Save();
         }
 
-        public ICollection<Area> GetAreas(int ApartmentId)
+        public ICollection<Area> GetAreas()
         {
-            throw new NotImplementedException();
+            return _context.Areas.OrderBy(a => a.Id).ToList();
         }
 
         public bool Save()
         {
-            throw new NotImplementedException();
+            var save = _context.SaveChanges();
+            return save > 0 ? true : false;
         }
 
         public bool UpdateArea(Area area)
         {
-            throw new NotImplementedException();
+            _context.Update(area);
+            return Save();
         }
     }
 }

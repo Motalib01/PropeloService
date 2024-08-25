@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿
 using Propelo.Data;
 using Propelo.Interfaces;
+using Propelo.Models;
 
 namespace Propelo.Repository
 {
@@ -14,32 +15,36 @@ namespace Propelo.Repository
         }
         public bool CreateProperty(Property property)
         {
-            throw new NotImplementedException();
+            _context.Add(property);
+            return Save();
         }
 
         public bool DeleteProperty(Property property)
         {
-            throw new NotImplementedException();
+            _context.Remove(property);
+            return Save();
         }
 
         public ICollection<Property> GetProperties()
         {
-            throw new NotImplementedException();
+            return _context.Properties.OrderBy(a => a.Id).ToList();
         }
 
         public bool PropertyExists(int propertyId)
         {
-            throw new NotImplementedException();
+            return _context.Properties.Any(a => a.Id == propertyId);
         }
 
         public bool Save()
         {
-            throw new NotImplementedException();
+            var save = _context.SaveChanges();
+            return save >= 0 ? true : false;
         }
 
         public bool UpdateProperty(Property property)
         {
-            throw new NotImplementedException();
+            _context.Update(property);
+            return Save();
         }
     }
 

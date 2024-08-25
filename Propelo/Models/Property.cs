@@ -2,7 +2,7 @@
 {
     public class Property
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
@@ -12,6 +12,7 @@
         public DateOnly ConstractionDate { get; set; }
         public DateOnly EndConstractionDate { get; set; }
         public int ApartmentsNumber { get; set; }
+        public bool Terrain { get; set; }
         public string Description { get; set; }
 
         //many to one

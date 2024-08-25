@@ -12,6 +12,10 @@ namespace Propelo.Repository
         {
             _context = context;
         }
+        public ICollection<Setting> GetSettings()
+        {
+            return _context.Settings.OrderBy(s => s.Id).ToList();
+        }
         public bool CreateSetting(Setting setting)
         {
             _context.Add(setting);
