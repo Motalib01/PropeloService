@@ -5,7 +5,7 @@ namespace Propelo.Interfaces
     //Mabey
     public interface IApartmentDocumentRepository
     {
-        ICollection<ApartmentDocument> GetApartmentDocuments(int apartmentId);
+        ICollection<ApartmentDocument> GetApartmentDocuments();
         bool ApartmentDocumentExists(int apartmentDocumentId);
         bool CreateApartmentDocument(ApartmentDocument apartmentDocument);
         bool UpdateApartmentDocument(ApartmentDocument apartmentDocument);

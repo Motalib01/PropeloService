@@ -6,7 +6,7 @@
         public string Name { get; set; }
         public type Type { get; set; }
         public int Floor { get; set; }
-        public int Surface { get; set; }
+        public double Surface { get; set; }
         public string Description { get; set; }
 
         //garage and terrain 

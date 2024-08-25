@@ -1,6 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using Propelo.Data;
+using Propelo.Interfaces;
+using Propelo.Repository;
 
 namespace Propelo
 {
@@ -11,6 +13,10 @@ namespace Propelo
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            builder.Services.AddScoped<IApartmentDocumentRepository,ApartmentDocumentRepository>();
+            
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
