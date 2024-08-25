@@ -14,7 +14,15 @@ namespace Propelo
 
             // Add services to the container.
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             builder.Services.AddScoped<IApartmentDocumentRepository,ApartmentDocumentRepository>();
+            builder.Services.AddScoped<IApartmentPictureRepository,ApartmentPictureRepository>();
+            builder.Services.AddScoped<IApartmentRepository,ApartmentRepository>();
+            builder.Services.AddScoped<IPromoterRepository,PromoterRepository>();
+            builder.Services.AddScoped<IPropertyPictureRepository,PropertyPictureRepository>();
+            builder.Services.AddScoped<IPropertyRepository,PropertyRepository>();
+            builder.Services.AddScoped<IAreaRepository,AreaRepository>();
+            builder.Services.AddScoped<ISettingRepository,SettingRepository>();
             
 
 
