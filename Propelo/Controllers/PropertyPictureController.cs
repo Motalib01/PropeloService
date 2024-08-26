@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Propelo.DTO;
 using Propelo.Interfaces;
+using Propelo.Models;
+using Propelo.Repository;
 
 namespace Propelo.Controllers
 {
@@ -16,6 +19,17 @@ namespace Propelo.Controllers
         {
             _propertyPictureRepository = propertyPictureRepository;
             _mapper = mapper;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<PropertyPicture>))]
+        public IActionResult GetPropertyPictures()
+        {
+            var propertyPictures = _mapper.Map<List<PropertyPictureDTO>>(_propertyPictureRepository.GetPropertyPictures);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(propertyPictures);
         }
     }
 }

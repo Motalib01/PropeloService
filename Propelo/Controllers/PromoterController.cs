@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Propelo.DTO;
 using Propelo.Interfaces;
+using Propelo.Models;
 
 namespace Propelo.Controllers
 {
@@ -16,6 +18,18 @@ namespace Propelo.Controllers
         {
             _promoterRepository = promoterRepository;
             _mapper = mapper;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(200, Type= typeof(IEnumerable<Promoter>))]
+        public IActionResult GetPromoters()
+        {
+            var promoters =_mapper.Map<List<PromoterDTO>>(_promoterRepository.GetPromoters());
+            
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(promoters);
         }
     }
 }

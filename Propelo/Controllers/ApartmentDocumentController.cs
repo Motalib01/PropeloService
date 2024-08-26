@@ -24,11 +24,11 @@ namespace Propelo.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<ApartmentDocument>))]
         public IActionResult GetApartmentDocuments()
         {
-            var Documents = _mapper.Map<List<ApartmentDocumentDTO>>(_apartmentDocumentRepository.GetApartmentDocuments());
+            var documents = _mapper.Map<List<ApartmentDocumentDTO>>(_apartmentDocumentRepository.GetApartmentDocuments());
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Documents);
+            return Ok(documents);
 
         }
 

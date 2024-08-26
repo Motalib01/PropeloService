@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Propelo.DTO;
 using Propelo.Interfaces;
 using Propelo.Models;
+using Propelo.Repository;
 
 namespace Propelo.Controllers
 {
@@ -20,6 +21,18 @@ namespace Propelo.Controllers
             _mapper = mapper;
         }
 
-        
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Setting>))]
+        public IActionResult GetSettings()
+        {
+            var settings = _mapper.Map<List<AreaDTO>>(_settingRepository.GetSettings);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(settings);
+
+        }
+
     }
 }

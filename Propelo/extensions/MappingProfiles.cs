@@ -10,7 +10,7 @@ namespace Propelo.extensions
         {
             CreateMap<Promoter,PromoterDTO>().ReverseMap();
             CreateMap<Property,PropertyDTO>().ReverseMap();
-            CreateMap<PropertyPicture,PropertyPectureDTO>().ReverseMap();
+            CreateMap<PropertyPicture,PropertyPictureDTO>().ReverseMap();
             CreateMap<Apartment,ApartmentDTO>().ReverseMap();
             CreateMap<ApartmentPicture,ApartmentPictureDTO>().ReverseMap();
             CreateMap<ApartmentDocument,ApartmentDocumentDTO>().ReverseMap();
