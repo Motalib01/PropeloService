@@ -36,7 +36,7 @@ namespace Propelo.Repository
 
         public ICollection<ApartmentDocument> GetApartmentDocumentsByApartment(int apartmentId)
         {
-            return _context.ApartmentDocuments.Where(a => a.ApartmentId == apartmentId).ToList();
+            return _context.ApartmentDocuments.Where(d => d.ApartmentId == apartmentId).ToList();
         }
 
         public ICollection<ApartmentPicture> GetApartmentPicturesByApartment(int apartmentId)

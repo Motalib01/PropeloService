@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Propelo.DTO;
 using Propelo.Interfaces;
@@ -77,6 +78,25 @@ namespace Propelo.Controllers
                 return BadRequest(ModelState);
 
             return Ok(propertyPictures);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateProperty([FromBody] PropertyDTO propertyCreate)
+        {
+            if (propertyCreate == null)
+                return BadRequest(ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var property = _mapper.Map<Property>(propertyCreate);
+
+            if (!_propertyRepository.CreateProperty(property))
+                return StatusCode(500, "A problem happened while handling your request.");
+
+            return Ok("Successfully created");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Propelo.DTO;
 using Propelo.Interfaces;
@@ -30,7 +31,6 @@ namespace Propelo.Controllers
                 return BadRequest(ModelState);
 
             return Ok(Apartments);
-
         }
 
         [HttpGet("{apartmentId}")]
@@ -47,7 +47,6 @@ namespace Propelo.Controllers
                 return BadRequest(ModelState);
 
             return Ok(apartment);
-
         }
 
         [HttpGet("apartment-pictures/{apartmentId}")]
@@ -64,7 +63,6 @@ namespace Propelo.Controllers
                 return BadRequest(ModelState);
 
             return Ok(apartmentPictures);
-
         }
 
         [HttpGet("apartment-documents/{apartmentId}")]
@@ -81,7 +79,6 @@ namespace Propelo.Controllers
                 return BadRequest(ModelState);
 
             return Ok(apartmentDocuments);
-
         }
 
         [HttpGet("areas/{apartmentId}")]
@@ -98,7 +95,25 @@ namespace Propelo.Controllers
                 return BadRequest(ModelState);
 
             return Ok(areas);
+        }
 
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateApartment([FromBody] ApartmentDTO apartmentCreate)
+        {
+            if(apartmentCreate == null)
+                return BadRequest(ModelState);
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+             var apartment = _mapper.Map<Apartment>(apartmentCreate);
+
+            if (!_apartmentRepository.CreateApartment(apartment))
+                return StatusCode(500, "A problem happened while handling your request.");
+
+            return Ok("Successfully created");
         }
     }
 }

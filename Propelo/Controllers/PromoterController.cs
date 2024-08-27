@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Propelo.DTO;
 using Propelo.Interfaces;
 using Propelo.Models;
+using Propelo.Repository;
 
 namespace Propelo.Controllers
 {
@@ -46,7 +47,25 @@ namespace Propelo.Controllers
                 return BadRequest(ModelState);
 
             return Ok(promoter);
+        }
 
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreatePromoter([FromBody] PromoterDTO promoterCreate)
+        {
+            if(promoterCreate == null)
+                return BadRequest(ModelState);
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var promoter = _mapper.Map<Promoter>(promoterCreate);
+
+            if(!_promoterRepository.CreatePromoter(promoter))
+                return StatusCode(500, "A problem happened while handling your request.");
+
+            return Ok("Successfully created");
         }
     }
 }

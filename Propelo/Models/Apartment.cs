@@ -12,7 +12,7 @@
         //garage and terrain 
 
         //many to one
-        public int PropertyId { get; set; }
+        public int? PropertyId { get; set; }
         public Property Property { get; set; }
 
         //one to many
