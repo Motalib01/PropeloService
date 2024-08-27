@@ -19,7 +19,7 @@
         public int PromoterID { get; internal set; }
         public Promoter Promoter { get; set; }
 
-        //one to many
+        //one to many   
         public ICollection<Apartment> Apartments { get; set; }
         public ICollection<PropertyPicture> PropertyPictures { get; set; }
         

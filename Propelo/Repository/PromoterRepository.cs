@@ -38,5 +38,10 @@ namespace Propelo.Repository
             _context.Update(promoter);
             return Save();
         }
+
+        public Promoter GetPromoter(int promoterId)
+        {
+            return _context.Promoters.Where(p => p.Id == promoterId).FirstOrDefault();
+        }
     }
 }

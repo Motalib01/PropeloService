@@ -30,11 +30,6 @@ namespace Propelo.Repository
             return Save();
         }
 
-        public ICollection<ApartmentDocument> GetApartmentDocuments()
-        {
-            return _context.ApartmentDocuments.OrderBy(a => a.Id).ToList();
-        }
-
         public bool Save()
         {
             var save= _context.SaveChanges();

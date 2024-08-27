@@ -29,9 +29,29 @@ namespace Propelo.Repository
             return Save();
         }
 
+        public Apartment GetApartment(int apartmentId)
+        {
+            return _context.Apartments.Where(a => a.Id == apartmentId).FirstOrDefault();
+        }
+
+        public ICollection<ApartmentDocument> GetApartmentDocumentsByApartment(int apartmentId)
+        {
+            return _context.ApartmentDocuments.Where(a => a.ApartmentId == apartmentId).ToList();
+        }
+
+        public ICollection<ApartmentPicture> GetApartmentPicturesByApartment(int apartmentId)
+        {
+            return _context.ApartmentPictures.Where(a => a.ApartmentId == apartmentId).ToList();
+        }
+
         public ICollection<Apartment> GetApartments()
         {
             return _context.Apartments.OrderBy(a => a.Id).ToList();
+        }
+
+        public ICollection<Area> GetAreasByApartment(int apartmentId)
+        {
+            return _context.Areas.Where(a => a.ApartmentId == apartmentId).ToList();
         }
 
         public bool Save()

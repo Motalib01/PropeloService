@@ -29,11 +29,6 @@ namespace Propelo.Repository
             return Save();
         }
 
-        public ICollection<ApartmentPicture> GetApartmentPictures( )
-        {
-            return _context.ApartmentPictures.OrderBy(a => a.Id).ToList();
-        }
-
         public bool Save()
         {
             var save = _context.SaveChanges();

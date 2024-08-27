@@ -24,11 +24,6 @@ namespace Propelo.Repository
             return Save();
         }
 
-        public ICollection<PropertyPicture> GetPropertyPictures()
-        {
-            return _context.PropertyPictures.OrderBy(a => a.Id).ToList();
-        }
-
         public bool PropertyPictureExists(int propertyPictureId)
         {
             return _context.PropertyPictures.Any(a => a.Id == propertyPictureId);

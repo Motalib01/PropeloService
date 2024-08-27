@@ -6,6 +6,7 @@ namespace Propelo.Interfaces
     public interface IPromoterRepository
     {
         ICollection<Promoter> GetPromoters();
+        Promoter GetPromoter(int promoterId);
         bool PromoterExists(int promoterId);
         bool CreatePromoter(Promoter promoter);
         bool UpdatePromoter(Promoter promoter);

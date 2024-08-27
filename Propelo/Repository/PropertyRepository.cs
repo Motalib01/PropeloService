@@ -30,6 +30,21 @@ namespace Propelo.Repository
             return _context.Properties.OrderBy(a => a.Id).ToList();
         }
 
+        public Property GetProperty(int propertyId)
+        {
+            return _context.Properties.Where(a => a.Id == propertyId).FirstOrDefault();
+        }
+
+        public Property GetPropertyByApartment(int apartmentId)
+        {
+            return _context.Apartments.Where(a => a.Id == apartmentId).Select(a => a.Property).FirstOrDefault();
+        }
+
+        public ICollection<PropertyPicture> GetPropertyPicturesByProperty(int propertyId)
+        {
+            return _context.PropertyPictures.Where(p=> p.PropertyId ==propertyId).ToList();
+        }
+
         public bool PropertyExists(int propertyId)
         {
             return _context.Properties.Any(a => a.Id == propertyId);

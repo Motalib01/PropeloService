@@ -31,5 +31,22 @@ namespace Propelo.Controllers
 
             return Ok(promoters);
         }
+
+        [HttpGet("{promoterId}")]
+        [ProducesResponseType(200, Type= typeof(Promoter))]
+        [ProducesResponseType(400)]
+        public IActionResult GetPromoter(int promoterId)
+        {
+            if(!_promoterRepository.PromoterExists(promoterId))
+                return NotFound();
+
+            var promoter = _mapper.Map<List<PromoterDTO>>(_promoterRepository.GetPromoter(promoterId));
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(promoter);
+
+        }
     }
 }
