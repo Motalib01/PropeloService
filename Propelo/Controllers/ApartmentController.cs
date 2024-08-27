@@ -115,5 +115,47 @@ namespace Propelo.Controllers
 
             return Ok("Successfully created");
         }
+
+        [HttpPut("{apartmentId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult UpdateApartment(int apartmentId, [FromBody] ApartmentDTO apartmentUpdate)
+        {
+            if (apartmentUpdate == null)
+                return BadRequest(ModelState);
+
+            if(apartmentId != apartmentUpdate.Id)
+                return BadRequest(ModelState);
+
+            if (!_apartmentRepository.ApartmentExists(apartmentId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var apartment = _mapper.Map<Apartment>(apartmentUpdate);
+
+            if (!_apartmentRepository.UpdateApartment(apartment))
+                return StatusCode(500, "A problem happened while handling your request.");
+
+            return Ok("Successfully updated");
+        }
+
+        [HttpDelete("{apartmentId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteApartment(int apartmentId)
+        {
+            if (!_apartmentRepository.ApartmentExists(apartmentId))
+                return NotFound();
+
+            var apartmentToDelete = _apartmentRepository.GetApartment(apartmentId);
+
+            if (!_apartmentRepository.DeleteApartment(apartmentToDelete))
+                return StatusCode(500, "A problem happened while handling your request.");
+
+            return Ok("Successfully deleted");
+        }
     }
 }

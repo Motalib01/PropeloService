@@ -10,5 +10,6 @@ namespace Propelo.DTO
         public int Floor { get; set; }
         public double Surface { get; set; }
         public string Description { get; set; }
+        public int? PropertyId { get; set; }
     }
 }

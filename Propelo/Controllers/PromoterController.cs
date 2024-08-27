@@ -67,5 +67,30 @@ namespace Propelo.Controllers
 
             return Ok("Successfully created");
         }
+
+        [HttpPut("{promoterId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult UpdatePromoter(int promoterId, [FromBody] PromoterDTO promoterUpdate)
+        {
+            if (promoterUpdate == null)
+                return BadRequest(ModelState);
+
+            if (promoterId != promoterUpdate.Id)
+                return BadRequest(ModelState);
+
+            if (!_promoterRepository.PromoterExists(promoterId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var promoter = _mapper.Map<Promoter>(promoterUpdate);
+
+            if (!_promoterRepository.UpdatePromoter(promoter))
+                return StatusCode(500, "A problem happened while handling your request.");
+
+            return Ok("Successfully updated");
+        }
     }
 }

@@ -53,5 +53,26 @@ namespace Propelo.Controllers
             return Ok("Successfully created");
         }
 
+        [HttpPut("{settingId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult UpdateSetting(int settingId, [FromBody] SettingDTO settingUpdate)
+        {
+            if (settingUpdate == null || settingId != settingUpdate.Id)
+                return BadRequest(ModelState);
+
+            if (!_settingRepository.SettingExists(settingId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var setting = _mapper.Map<Setting>(settingUpdate);
+
+            if (_settingRepository.UpdateSetting(setting))
+                return StatusCode(500, "A problem occurred while handling your request.");
+
+            return Ok("Successfully updated");
+        }
     }
 }

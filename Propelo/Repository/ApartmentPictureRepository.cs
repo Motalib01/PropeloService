@@ -29,6 +29,11 @@ namespace Propelo.Repository
             return Save();
         }
 
+        public ApartmentPicture GetApartmentPicture(int apartmentPictureId)
+        {
+            return _context.ApartmentPictures.Where(a => a.Id == apartmentPictureId).FirstOrDefault();
+        }
+
         public bool Save()
         {
             var save = _context.SaveChanges();

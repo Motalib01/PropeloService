@@ -24,6 +24,11 @@ namespace Propelo.Repository
             return Save();
         }
 
+        public PropertyPicture GetPropertyPicture(int propertyPictureId)
+        {
+            return _context.PropertyPictures.Where(a => a.Id == propertyPictureId).FirstOrDefault();
+        }
+
         public bool PropertyPictureExists(int propertyPictureId)
         {
             return _context.PropertyPictures.Any(a => a.Id == propertyPictureId);

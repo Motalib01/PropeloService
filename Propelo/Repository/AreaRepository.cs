@@ -29,6 +29,11 @@ namespace Propelo.Repository
             return Save();
         }
 
+        public Area GetArea(int areaId)
+        {
+            return _context.Areas.Where(a => a.Id == areaId).FirstOrDefault();
+        }
+
         public bool Save()
         {
             var save = _context.SaveChanges();

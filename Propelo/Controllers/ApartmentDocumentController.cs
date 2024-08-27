@@ -41,5 +41,50 @@ namespace Propelo.Controllers
 
             return Ok("Successfully created");
         }
+
+        [HttpPut("{apartmentDocumentId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult UpdateApartmentDocument(int apartmentDocumentId, [FromBody] ApartmentDocumentDTO apartmentDocumentUpdate)
+        {
+            if (apartmentDocumentUpdate == null || apartmentDocumentId != apartmentDocumentUpdate.Id)
+                return BadRequest(ModelState);
+
+            if (!_apartmentDocumentRepository.ApartmentDocumentExists(apartmentDocumentId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var apartmentDocument = _mapper.Map<ApartmentDocument>(apartmentDocumentUpdate);
+
+            if (!_apartmentDocumentRepository.UpdateApartmentDocument(apartmentDocument))
+            {
+                ModelState.AddModelError("", $"Something went wrong updating the apartment document {apartmentDocument.Name}");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully updated");
+        }
+
+        [HttpDelete("{apartmentDocumentId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteApartmentDocument(int apartmentDocumentId)
+        {
+            if (!_apartmentDocumentRepository.ApartmentDocumentExists(apartmentDocumentId))
+                return NotFound();
+
+            var apartmentDocumentToDelete = _apartmentDocumentRepository.GetApartmentDocument(apartmentDocumentId);
+
+            if (!_apartmentDocumentRepository.DeleteApartmentDocument(apartmentDocumentToDelete))
+            {
+                ModelState.AddModelError("", $"Something went wrong deleting the apartment document with id {apartmentDocumentId}");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully deleted");
+        }
     }
 }

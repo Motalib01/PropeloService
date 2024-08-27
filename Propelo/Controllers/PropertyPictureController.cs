@@ -41,5 +41,50 @@ namespace Propelo.Controllers
 
             return Ok("Successfully created");
         }
+
+        [HttpPut("{propertyPictureId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult UpdatePropertyPicture(int propertyPictureId, [FromBody] PropertyPictureDTO propertyPictureUpdate)
+        {
+            if (propertyPictureUpdate == null || propertyPictureId != propertyPictureUpdate.Id)
+                return BadRequest(ModelState);
+
+            if (!_propertyPictureRepository.PropertyPictureExists(propertyPictureId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var propertyPicture = _mapper.Map<PropertyPicture>(propertyPictureUpdate);
+
+            if (!_propertyPictureRepository.UpdatePropertyPicture(propertyPicture))
+            {
+                ModelState.AddModelError("", $"Something went wrong updating the property picture {propertyPicture.Id}");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully updated");
+        }
+
+        [HttpDelete("{propertyPictureId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeletePropertyPicture(int propertyPictureId)
+        {
+            if (!_propertyPictureRepository.PropertyPictureExists(propertyPictureId))
+                return NotFound();
+
+            var propertyPictureToDelete = _propertyPictureRepository.GetPropertyPicture(propertyPictureId);
+
+            if (!_propertyPictureRepository.DeletePropertyPicture(propertyPictureToDelete))
+            {
+                ModelState.AddModelError("", $"Something went wrong deleting the property picture {propertyPictureId}");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully deleted");
+        }
     }
 }

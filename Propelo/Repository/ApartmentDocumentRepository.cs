@@ -30,6 +30,11 @@ namespace Propelo.Repository
             return Save();
         }
 
+        public ApartmentDocument GetApartmentDocument(int apartmentDocumentId)
+        {
+            return _context.ApartmentDocuments.Where(a=>a.Id == apartmentDocumentId).FirstOrDefault();
+        }
+
         public bool Save()
         {
             var save= _context.SaveChanges();

@@ -42,5 +42,50 @@ namespace Propelo.Controllers
 
             return Ok("Successfully created");
         }
+
+        [HttpPut("{areaId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult UpdateArea(int areaId, [FromBody] AreaDTO areaUpdate)
+        {
+            if (areaUpdate == null || areaId != areaUpdate.Id)
+                return BadRequest(ModelState);
+
+            if (!_areaRepository.AreaExists(areaId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var area = _mapper.Map<Area>(areaUpdate);
+
+            if (!_areaRepository.UpdateArea(area))
+            {
+                ModelState.AddModelError("", $"Something went wrong updating the area {area.Name}");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully updated");
+        }
+
+        [HttpDelete("{areaId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteArea(int areaId)
+        {
+            if (!_areaRepository.AreaExists(areaId))
+                return NotFound();
+
+            var areaToDelete = _areaRepository.GetArea(areaId);
+
+            if (!_areaRepository.DeleteArea(areaToDelete))
+            {
+                ModelState.AddModelError("", $"Something went wrong deleting the area {areaId}");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully deleted");
+        }
     }
 }
