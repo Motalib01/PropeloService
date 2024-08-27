@@ -2,8 +2,8 @@
 {
     public class Setting
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public byte[] Logo { get; set; }
+        public int? Id { get; set; }
+        public string? Name { get; set; }
+        public byte[]? Logo { get; set; }
     }
 }
