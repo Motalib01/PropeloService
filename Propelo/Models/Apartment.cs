@@ -19,6 +19,7 @@
         public ICollection<Area> Areas { get; set; } 
         public ICollection<ApartmentDocument> ApartmentDocuments { get; set; } 
         public ICollection<ApartmentPicture> ApartmentPictures { get; set; }
+        public ICollection<Order> Orders { get; set; }
 
     }
 }

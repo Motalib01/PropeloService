@@ -31,11 +31,11 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var apartmentDocument = _mapper.Map<ApartmentDocument>(apartmentDocumentCreate);
+            var apartmentDocumentToCreate = _mapper.Map<ApartmentDocument>(apartmentDocumentCreate);
 
-            if (!_apartmentDocumentRepository.CreateApartmentDocument(apartmentDocument))
+            if (!_apartmentDocumentRepository.CreateApartmentDocument(apartmentDocumentToCreate))
             {
-                ModelState.AddModelError("", $"Something went wrong saving the apartment document {apartmentDocument.Name}");
+                ModelState.AddModelError("", $"Something went wrong saving the apartment document {apartmentDocumentToCreate.Name}");
                 return StatusCode(500, ModelState);
             }
 
@@ -56,11 +56,11 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var apartmentDocument = _mapper.Map<ApartmentDocument>(apartmentDocumentUpdate);
+            var apartmentDocumentToUpdate = _mapper.Map<ApartmentDocument>(apartmentDocumentUpdate);
 
-            if (!_apartmentDocumentRepository.UpdateApartmentDocument(apartmentDocument))
+            if (!_apartmentDocumentRepository.UpdateApartmentDocument(apartmentDocumentToUpdate))
             {
-                ModelState.AddModelError("", $"Something went wrong updating the apartment document {apartmentDocument.Name}");
+                ModelState.AddModelError("", $"Something went wrong updating the apartment document {apartmentDocumentToUpdate.Name}");
                 return StatusCode(500, ModelState);
             }
 

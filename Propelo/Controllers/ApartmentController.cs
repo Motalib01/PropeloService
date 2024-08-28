@@ -25,12 +25,12 @@ namespace Propelo.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<Apartment>))]
         public IActionResult GetApartments()
         {
-            var Apartments = _mapper.Map<List<ApartmentDTO>>(_apartmentRepository.GetApartments());
+            var apartments = _mapper.Map<List<ApartmentDTO>>(_apartmentRepository.GetApartments());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Apartments);
+            return Ok(apartments);
         }
 
         [HttpGet("{apartmentId}")]
@@ -108,9 +108,9 @@ namespace Propelo.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-             var apartment = _mapper.Map<Apartment>(apartmentCreate);
+             var apartmentToCreate = _mapper.Map<Apartment>(apartmentCreate);
 
-            if (!_apartmentRepository.CreateApartment(apartment))
+            if (!_apartmentRepository.CreateApartment(apartmentToCreate))
                 return StatusCode(500, "A problem happened while handling your request.");
 
             return Ok("Successfully created");
@@ -133,9 +133,9 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var apartment = _mapper.Map<Apartment>(apartmentUpdate);
+            var apartmentToUpdate = _mapper.Map<Apartment>(apartmentUpdate);
 
-            if (!_apartmentRepository.UpdateApartment(apartment))
+            if (!_apartmentRepository.UpdateApartment(apartmentToUpdate))
                 return StatusCode(500, "A problem happened while handling your request.");
 
             return Ok("Successfully updated");

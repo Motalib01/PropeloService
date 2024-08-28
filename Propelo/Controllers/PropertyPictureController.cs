@@ -31,11 +31,11 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var propertyPicture = _mapper.Map<PropertyPicture>(propertyPictureCreate);
+            var propertyPictureToCreate = _mapper.Map<PropertyPicture>(propertyPictureCreate);
 
-            if (!_propertyPictureRepository.CreatePropertyPicture(propertyPicture))
+            if (!_propertyPictureRepository.CreatePropertyPicture(propertyPictureToCreate))
             {
-                ModelState.AddModelError("", $"Something went wrong saving the property picture {propertyPicture.Id}");
+                ModelState.AddModelError("", $"Something went wrong saving the property picture {propertyPictureToCreate.Id}");
                 return StatusCode(500, ModelState);
             }
 
@@ -56,11 +56,11 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var propertyPicture = _mapper.Map<PropertyPicture>(propertyPictureUpdate);
+            var propertyPictureToUpdate = _mapper.Map<PropertyPicture>(propertyPictureUpdate);
 
-            if (!_propertyPictureRepository.UpdatePropertyPicture(propertyPicture))
+            if (!_propertyPictureRepository.UpdatePropertyPicture(propertyPictureToUpdate))
             {
-                ModelState.AddModelError("", $"Something went wrong updating the property picture {propertyPicture.Id}");
+                ModelState.AddModelError("", $"Something went wrong updating the property picture {propertyPictureToUpdate.Id}");
                 return StatusCode(500, ModelState);
             }
 

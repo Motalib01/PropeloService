@@ -22,6 +22,7 @@ namespace Propelo
             builder.Services.AddScoped<IPropertyPictureRepository,PropertyPictureRepository>();
             builder.Services.AddScoped<IPropertyRepository,PropertyRepository>();
             builder.Services.AddScoped<IAreaRepository,AreaRepository>();
+            builder.Services.AddScoped<IOrderRepository,OrderRepository>();
             builder.Services.AddScoped<ISettingRepository,SettingRepository>();
             
 
@@ -43,6 +44,8 @@ namespace Propelo
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
 

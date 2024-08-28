@@ -91,9 +91,9 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var property = _mapper.Map<Property>(propertyCreate);
+            var propertyToCreate = _mapper.Map<Property>(propertyCreate);
 
-            if (!_propertyRepository.CreateProperty(property))
+            if (!_propertyRepository.CreateProperty(propertyToCreate))
                 return StatusCode(500, "A problem happened while handling your request.");
 
             return Ok("Successfully created");
@@ -110,9 +110,9 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var property = _mapper.Map<Property>(propertyUpdate);
+            var propertyToUpdate = _mapper.Map<Property>(propertyUpdate);
 
-            if (!_propertyRepository.UpdateProperty(property))
+            if (!_propertyRepository.UpdateProperty(propertyToUpdate))
                 return StatusCode(500, "A problem happened while handling your request.");
 
             return Ok("Successfully Update");

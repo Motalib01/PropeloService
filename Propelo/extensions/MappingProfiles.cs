@@ -15,6 +15,7 @@ namespace Propelo.extensions
             CreateMap<ApartmentPicture,ApartmentPictureDTO>().ReverseMap();
             CreateMap<ApartmentDocument,ApartmentDocumentDTO>().ReverseMap();
             CreateMap<Area,AreaDTO>().ReverseMap();
+            CreateMap<Order,OrderDTO>().ReverseMap();
             CreateMap<Setting,SettingDTO>().ReverseMap();
         }
     }

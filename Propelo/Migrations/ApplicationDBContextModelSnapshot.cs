@@ -31,23 +31,21 @@ namespace Propelo.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Floor")
+                    b.Property<int?>("Floor")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PropertyId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Surface")
+                    b.Property<double?>("Surface")
                         .HasColumnType("float");
 
-                    b.Property<int>("Type")
+                    b.Property<int?>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -65,15 +63,13 @@ namespace Propelo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ApartmentId")
+                    b.Property<int?>("ApartmentId")
                         .HasColumnType("int");
 
                     b.Property<byte[]>("Document")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -91,11 +87,10 @@ namespace Propelo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ApartmentId")
+                    b.Property<int?>("ApartmentId")
                         .HasColumnType("int");
 
                     b.Property<byte[]>("Picture")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");
@@ -117,14 +112,12 @@ namespace Propelo.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Surface")
+                    b.Property<double?>("Surface")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -143,27 +136,21 @@ namespace Propelo.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Picture")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");
@@ -173,51 +160,46 @@ namespace Propelo.Migrations
 
             modelBuilder.Entity("Propelo.Models.Property", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ApartmentsNumber")
+                    b.Property<int?>("ApartmentsNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("ConstractionDate")
+                    b.Property<DateOnly?>("ConstractionDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("EndConstractionDate")
+                    b.Property<DateOnly?>("EndConstractionDate")
                         .HasColumnType("date");
 
-                    b.Property<double>("Latitude")
+                    b.Property<double?>("Latitude")
                         .HasColumnType("float");
 
-                    b.Property<double>("Longitude")
+                    b.Property<double?>("Longitude")
                         .HasColumnType("float");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PromoterID")
+                    b.Property<int?>("PromoterID")
                         .HasColumnType("int");
 
                     b.Property<string>("State")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Terrain")
+                    b.Property<bool?>("Terrain")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
@@ -229,17 +211,16 @@ namespace Propelo.Migrations
 
             modelBuilder.Entity("Propelo.Models.PropertyPicture", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
 
                     b.Property<byte[]>("Picture")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("PropertyId")
+                    b.Property<int?>("PropertyId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -251,18 +232,16 @@ namespace Propelo.Migrations
 
             modelBuilder.Entity("Propelo.Models.Setting", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
 
                     b.Property<byte[]>("Logo")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -283,9 +262,7 @@ namespace Propelo.Migrations
                 {
                     b.HasOne("Propelo.Models.Apartment", "Apartment")
                         .WithMany("ApartmentDocuments")
-                        .HasForeignKey("ApartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApartmentId");
 
                     b.Navigation("Apartment");
                 });
@@ -294,9 +271,7 @@ namespace Propelo.Migrations
                 {
                     b.HasOne("Propelo.Models.Apartment", "Apartment")
                         .WithMany("ApartmentPictures")
-                        .HasForeignKey("ApartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApartmentId");
 
                     b.Navigation("Apartment");
                 });
@@ -316,9 +291,7 @@ namespace Propelo.Migrations
                 {
                     b.HasOne("Propelo.Models.Promoter", "Promoter")
                         .WithMany("properties")
-                        .HasForeignKey("PromoterID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PromoterID");
 
                     b.Navigation("Promoter");
                 });
@@ -327,9 +300,7 @@ namespace Propelo.Migrations
                 {
                     b.HasOne("Propelo.Models.Property", "Property")
                         .WithMany("PropertyPictures")
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PropertyId");
 
                     b.Navigation("Property");
                 });

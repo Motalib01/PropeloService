@@ -45,9 +45,9 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var setting = _mapper.Map<Setting>(settingCreate);
+            var settingToCreate = _mapper.Map<Setting>(settingCreate);
 
-            if(_settingRepository.CreateSetting(setting))
+            if(_settingRepository.CreateSetting(settingToCreate))
                 return StatusCode(500, "A problem occurred while handling your request.");
 
             return Ok("Successfully created");
@@ -67,9 +67,9 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var setting = _mapper.Map<Setting>(settingUpdate);
+            var settingToUpdate = _mapper.Map<Setting>(settingUpdate);
 
-            if (_settingRepository.UpdateSetting(setting))
+            if (_settingRepository.UpdateSetting(settingToUpdate))
                 return StatusCode(500, "A problem occurred while handling your request.");
 
             return Ok("Successfully updated");

@@ -32,11 +32,11 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var area = _mapper.Map<Area>(areaCreate);
+            var areaToCreate = _mapper.Map<Area>(areaCreate);
 
-            if (!_areaRepository.CreateArea(area))
+            if (!_areaRepository.CreateArea(areaToCreate))
             {
-                ModelState.AddModelError("", $"Something went wrong saving the area {area.Name}");
+                ModelState.AddModelError("", $"Something went wrong saving the area {areaToCreate.Name}");
                 return StatusCode(500, ModelState);
             }
 
@@ -57,11 +57,11 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var area = _mapper.Map<Area>(areaUpdate);
+            var areaToUpdate = _mapper.Map<Area>(areaUpdate);
 
-            if (!_areaRepository.UpdateArea(area))
+            if (!_areaRepository.UpdateArea(areaToUpdate))
             {
-                ModelState.AddModelError("", $"Something went wrong updating the area {area.Name}");
+                ModelState.AddModelError("", $"Something went wrong updating the area {areaToUpdate.Name}");
                 return StatusCode(500, ModelState);
             }
 

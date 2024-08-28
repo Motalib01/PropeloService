@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Propelo.Migrations
 {
     /// <inheritdoc />
-    public partial class Create : Migration
+    public partial class Host : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,12 +17,12 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -35,8 +35,8 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Logo = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Logo = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -49,18 +49,18 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Latitude = table.Column<double>(type: "float", nullable: false),
-                    Longitude = table.Column<double>(type: "float", nullable: false),
-                    ConstractionDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndConstractionDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    ApartmentsNumber = table.Column<int>(type: "int", nullable: false),
-                    Terrain = table.Column<bool>(type: "bit", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PromoterID = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Latitude = table.Column<double>(type: "float", nullable: true),
+                    Longitude = table.Column<double>(type: "float", nullable: true),
+                    ConstractionDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    EndConstractionDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    ApartmentsNumber = table.Column<int>(type: "int", nullable: true),
+                    Terrain = table.Column<bool>(type: "bit", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PromoterID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -69,8 +69,7 @@ namespace Propelo.Migrations
                         name: "FK_Properties_Promoters_PromoterID",
                         column: x => x.PromoterID,
                         principalTable: "Promoters",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -79,12 +78,12 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Floor = table.Column<int>(type: "int", nullable: false),
-                    Surface = table.Column<double>(type: "float", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PropertyId = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Type = table.Column<int>(type: "int", nullable: true),
+                    Floor = table.Column<int>(type: "int", nullable: true),
+                    Surface = table.Column<double>(type: "float", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PropertyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -93,8 +92,7 @@ namespace Propelo.Migrations
                         name: "FK_Apartments_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -103,8 +101,8 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    PropertyId = table.Column<int>(type: "int", nullable: false)
+                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    PropertyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -113,8 +111,7 @@ namespace Propelo.Migrations
                         name: "FK_PropertyPictures_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -123,9 +120,9 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Document = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    ApartmentId = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Document = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ApartmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -134,8 +131,7 @@ namespace Propelo.Migrations
                         name: "FK_ApartmentDocuments_Apartments_ApartmentId",
                         column: x => x.ApartmentId,
                         principalTable: "Apartments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -144,8 +140,8 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    ApartmentId = table.Column<int>(type: "int", nullable: false)
+                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ApartmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -154,8 +150,7 @@ namespace Propelo.Migrations
                         name: "FK_ApartmentPictures_Apartments_ApartmentId",
                         column: x => x.ApartmentId,
                         principalTable: "Apartments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -164,9 +159,9 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Surface = table.Column<double>(type: "float", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Surface = table.Column<double>(type: "float", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ApartmentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

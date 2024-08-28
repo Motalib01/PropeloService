@@ -60,9 +60,9 @@ namespace Propelo.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var promoter = _mapper.Map<Promoter>(promoterCreate);
+            var promoterToCreate = _mapper.Map<Promoter>(promoterCreate);
 
-            if(!_promoterRepository.CreatePromoter(promoter))
+            if(!_promoterRepository.CreatePromoter(promoterToCreate))
                 return StatusCode(500, "A problem happened while handling your request.");
 
             return Ok("Successfully created");
@@ -85,9 +85,9 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var promoter = _mapper.Map<Promoter>(promoterUpdate);
+            var promoterToUpdate = _mapper.Map<Promoter>(promoterUpdate);
 
-            if (!_promoterRepository.UpdatePromoter(promoter))
+            if (!_promoterRepository.UpdatePromoter(promoterToUpdate))
                 return StatusCode(500, "A problem happened while handling your request.");
 
             return Ok("Successfully updated");
