@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Propelo.Models;
 
 namespace Propelo.Data
 {
-    public class ApplicationDBContext: DbContext
+    public class ApplicationDBContext : IdentityDbContext<User>
     {
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
             : base(options)
@@ -22,6 +24,12 @@ namespace Propelo.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>().Property(u => u.Initials).HasMaxLength(5);
+            modelBuilder.HasDefaultSchema("Propelo"); 
+                
+
             //Promoter relationships
             modelBuilder.Entity<Promoter>()
                 .HasMany(p=>p.properties)

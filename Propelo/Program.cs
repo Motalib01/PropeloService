@@ -1,7 +1,11 @@
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Propelo.Data;
 using Propelo.Interfaces;
+using Propelo.Models;
 using Propelo.Repository;
 
 namespace Propelo
@@ -13,6 +17,27 @@ namespace Propelo
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            builder.Services.AddAuthorization();
+            builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme).AddBearerToken(IdentityConstants.BearerScheme);
+            builder.Services.AddIdentityCore<User>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 1;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+
+                options.User.RequireUniqueEmail = false;
+                options.SignIn.RequireConfirmedEmail = false;
+            }
+            )
+                .AddEntityFrameworkStores<ApplicationDBContext>()
+                .AddApiEndpoints();
+
+            //builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+            //    .AddEntityFrameworkStores<ApplicationDBContext>();
+
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddScoped<IApartmentDocumentRepository,ApartmentDocumentRepository>();
@@ -25,8 +50,6 @@ namespace Propelo
             builder.Services.AddScoped<IOrderRepository,OrderRepository>();
             builder.Services.AddScoped<ISettingRepository,SettingRepository>();
             
-
-
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -50,7 +73,6 @@ namespace Propelo
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
