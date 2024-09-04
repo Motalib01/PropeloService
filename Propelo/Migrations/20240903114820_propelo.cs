@@ -68,7 +68,7 @@ namespace Propelo.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -83,7 +83,7 @@ namespace Propelo.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Logo = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                    Logo = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -270,7 +270,7 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PropertyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -291,8 +291,7 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Document = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    Document = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ApartmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -313,7 +312,7 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ApartmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

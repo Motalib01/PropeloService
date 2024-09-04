@@ -16,7 +16,7 @@ namespace Propelo.Repository
         public bool CreateProperty(Property property)
         {
             _context.Add(property);
-            return Save();
+            return _context.SaveChanges() > 0;
         }
 
         public bool DeleteProperty(Property property)
@@ -53,7 +53,7 @@ namespace Propelo.Repository
         public bool Save()
         {
             var save = _context.SaveChanges();
-            return save >= 0 ? true : false;
+            return save > 0 ? true : false;
         }
 
         public bool UpdateProperty(Property property)

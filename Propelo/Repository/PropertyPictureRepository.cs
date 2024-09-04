@@ -1,4 +1,7 @@
-﻿using Propelo.Data;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Propelo.Data;
+using Propelo.DTO;
 using Propelo.Interfaces;
 using Propelo.Models;
 
@@ -7,43 +10,54 @@ namespace Propelo.Repository
     public class PropertyPictureRepository : IPropertyPictureRepository
     {
         private readonly ApplicationDBContext _context;
+        private readonly IMapper _mapper;
 
-        public PropertyPictureRepository(ApplicationDBContext context)
+        public PropertyPictureRepository(ApplicationDBContext context, IMapper mapper)
         {
             _context = context;
-        }
-        public bool CreatePropertyPicture(PropertyPicture propertyPicture)
-        {
-            _context.Add(propertyPicture);
-            return Save();
+            _mapper = mapper;
         }
 
-        public bool DeletePropertyPicture(PropertyPicture propertyPicture)
+        public async Task<PropertyPicture> CreatePropertyPictureAsync(PropertyPictureDTO PropertyPictureDTO)
         {
-            _context.Remove(propertyPicture);
-            return Save();
+            var picture = _mapper.Map<PropertyPicture>(PropertyPictureDTO);
+
+            // Save the file to the server
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            string filePath = Path.Combine(path, picture.PictureName);
+
+            // Save the file to the path
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await PropertyPictureDTO.Picture.CopyToAsync(stream);
+            }
+
+            picture.PicturePath = filePath;
+
+            _context.PropertyPictures.Add(picture);
+
+            return picture;
         }
 
-        public PropertyPicture GetPropertyPicture(int propertyPictureId)
+        public async Task<PropertyPicture> GetPropertyPictureByIdAsync(int id)
         {
-            return _context.PropertyPictures.Where(a => a.Id == propertyPictureId).FirstOrDefault();
+            return await _context.PropertyPictures.Where(a => a.Id == id).FirstOrDefaultAsync();
         }
 
-        public bool PropertyPictureExists(int propertyPictureId)
+        public async Task<IEnumerable<PropertyPicture>> GetPropertyPicturesAsync()
         {
-            return _context.PropertyPictures.Any(a => a.Id == propertyPictureId);
+            return await _context.PropertyPictures.OrderBy(a => a.Id).ToListAsync();
         }
 
-        public bool Save()
+        public async Task<bool> SaveAllAsync()
         {
-            var save = _context.SaveChanges();
+            var save = await _context.SaveChangesAsync();
             return save > 0 ? true : false;
-        }
-
-        public bool UpdatePropertyPicture(PropertyPicture propertyPicture)
-        {
-            _context.Update(propertyPicture);
-            return Save();
         }
     }
 }

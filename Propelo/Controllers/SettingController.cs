@@ -39,15 +39,13 @@ namespace Propelo.Controllers
         [ProducesResponseType(400)]
         public IActionResult CreateSetting([FromBody] SettingDTO settingCreate)
         {
-            if (settingCreate == null)
-                return BadRequest(ModelState);
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            //var settingToCreate = _mapper.Map<Setting>(settingCreate);
             var settingToCreate = _mapper.Map<Setting>(settingCreate);
 
-            if(_settingRepository.CreateSetting(settingToCreate))
+            if(!_settingRepository.CreateSetting(settingToCreate))
                 return StatusCode(500, "A problem occurred while handling your request.");
 
             return Ok("Successfully created");
@@ -69,7 +67,7 @@ namespace Propelo.Controllers
 
             var settingToUpdate = _mapper.Map<Setting>(settingUpdate);
 
-            if (_settingRepository.UpdateSetting(settingToUpdate))
+            if (!_settingRepository.UpdateSetting(settingToUpdate))
                 return StatusCode(500, "A problem occurred while handling your request.");
 
             return Ok("Successfully updated");

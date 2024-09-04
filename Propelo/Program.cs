@@ -1,12 +1,15 @@
 
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Propelo.Data;
+using Propelo.extensions;
 using Propelo.Interfaces;
 using Propelo.Models;
 using Propelo.Repository;
+using System.Reflection;
 
 namespace Propelo
 {
@@ -17,6 +20,19 @@ namespace Propelo
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReactApp",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:5173") 
+                              
+                              .AllowAnyHeader()
+                              .AllowAnyMethod();
+                    });
+            });
+
 
             builder.Services.AddAuthorization();
             builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme).AddBearerToken(IdentityConstants.BearerScheme);
@@ -44,11 +60,13 @@ namespace Propelo
             builder.Services.AddScoped<IApartmentPictureRepository,ApartmentPictureRepository>();
             builder.Services.AddScoped<IApartmentRepository,ApartmentRepository>();
             builder.Services.AddScoped<IPromoterRepository,PromoterRepository>();
+            builder.Services.AddScoped<IPromoterPictureRepository,PromoterPictureRepository>();
             builder.Services.AddScoped<IPropertyPictureRepository,PropertyPictureRepository>();
             builder.Services.AddScoped<IPropertyRepository,PropertyRepository>();
             builder.Services.AddScoped<IAreaRepository,AreaRepository>();
             builder.Services.AddScoped<IOrderRepository,OrderRepository>();
             builder.Services.AddScoped<ISettingRepository,SettingRepository>();
+            builder.Services.AddScoped<ILogoRepository,LogoRepository>();
             
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -73,6 +91,9 @@ namespace Propelo
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
+            app.UseCors("AllowReactApp");
+
 
             app.MapControllers();
 

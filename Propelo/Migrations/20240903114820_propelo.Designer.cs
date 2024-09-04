@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Propelo.Data;
 
@@ -11,9 +12,11 @@ using Propelo.Data;
 namespace Propelo.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240903114820_propelo")]
+    partial class propelo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,16 +203,8 @@ namespace Propelo.Migrations
                     b.Property<int?>("ApartmentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("DocumentName")
-                        .IsRequired()
+                    b.Property<string>("Document")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DocumentPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("DocumentSize")
-                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -229,16 +224,8 @@ namespace Propelo.Migrations
                     b.Property<int?>("ApartmentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PictureName")
-                        .IsRequired()
+                    b.Property<string>("Picture")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PicturePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("PictureSize")
-                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -272,35 +259,6 @@ namespace Propelo.Migrations
                     b.HasIndex("ApartmentId");
 
                     b.ToTable("Areas", "Propelo");
-                });
-
-            modelBuilder.Entity("Propelo.Models.Logo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("LogoName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LogoPath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("LogoSize")
-                        .HasColumnType("bigint");
-
-                    b.Property<int?>("SettingId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SettingId")
-                        .IsUnique()
-                        .HasFilter("[SettingId] IS NOT NULL");
-
-                    b.ToTable("Logos", "Propelo");
                 });
 
             modelBuilder.Entity("Propelo.Models.Order", b =>
@@ -356,40 +314,12 @@ namespace Propelo.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Picture")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Promoters", "Propelo");
-                });
-
-            modelBuilder.Entity("Propelo.Models.PromoterPicture", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("PictureName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PicturePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("PictureSize")
-                        .HasColumnType("bigint");
-
-                    b.Property<int?>("PromoterId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PromoterId")
-                        .IsUnique()
-                        .HasFilter("[PromoterId] IS NOT NULL");
-
-                    b.ToTable("PromoterPictures", "Propelo");
                 });
 
             modelBuilder.Entity("Propelo.Models.Property", b =>
@@ -451,16 +381,8 @@ namespace Propelo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("PictureName")
-                        .IsRequired()
+                    b.Property<string>("Picture")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PicturePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("PictureSize")
-                        .HasColumnType("bigint");
 
                     b.Property<int?>("PropertyId")
                         .HasColumnType("int");
@@ -479,6 +401,9 @@ namespace Propelo.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Logo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -646,15 +571,6 @@ namespace Propelo.Migrations
                     b.Navigation("Apartment");
                 });
 
-            modelBuilder.Entity("Propelo.Models.Logo", b =>
-                {
-                    b.HasOne("Propelo.Models.Setting", "Setting")
-                        .WithOne("Logo")
-                        .HasForeignKey("Propelo.Models.Logo", "SettingId");
-
-                    b.Navigation("Setting");
-                });
-
             modelBuilder.Entity("Propelo.Models.Order", b =>
                 {
                     b.HasOne("Propelo.Models.Apartment", "Apartment")
@@ -662,15 +578,6 @@ namespace Propelo.Migrations
                         .HasForeignKey("ApartmentID");
 
                     b.Navigation("Apartment");
-                });
-
-            modelBuilder.Entity("Propelo.Models.PromoterPicture", b =>
-                {
-                    b.HasOne("Propelo.Models.Promoter", "Promoter")
-                        .WithOne("Picture")
-                        .HasForeignKey("Propelo.Models.PromoterPicture", "PromoterId");
-
-                    b.Navigation("Promoter");
                 });
 
             modelBuilder.Entity("Propelo.Models.Property", b =>
@@ -704,8 +611,6 @@ namespace Propelo.Migrations
 
             modelBuilder.Entity("Propelo.Models.Promoter", b =>
                 {
-                    b.Navigation("Picture");
-
                     b.Navigation("properties");
                 });
 
@@ -714,11 +619,6 @@ namespace Propelo.Migrations
                     b.Navigation("Apartments");
 
                     b.Navigation("PropertyPictures");
-                });
-
-            modelBuilder.Entity("Propelo.Models.Setting", b =>
-                {
-                    b.Navigation("Logo");
                 });
 #pragma warning restore 612, 618
         }

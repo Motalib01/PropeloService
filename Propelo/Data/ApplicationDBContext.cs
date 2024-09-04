@@ -12,6 +12,7 @@ namespace Propelo.Data
         {
         }
         public DbSet<Promoter> Promoters { get; set; }
+        public DbSet<PromoterPicture> PromoterPictures { get; set; }
         public DbSet<Property> Properties { get; set; }
         public DbSet<PropertyPicture> PropertyPictures { get; set; }
         public DbSet<Apartment> Apartments { get; set; }
@@ -20,6 +21,7 @@ namespace Propelo.Data
         public DbSet<Area> Areas { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Setting> Settings { get; set; }
+        public DbSet<Logo> Logos { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,6 +38,12 @@ namespace Propelo.Data
                 .WithOne(p=>p.Promoter)
                 .HasForeignKey(p=>p.PromoterID)
                 .HasPrincipalKey(p=>p.Id);
+
+            modelBuilder.Entity<Promoter>()
+                .HasOne(p=>p.Picture)
+                .WithOne(p=>p.Promoter)
+                .HasForeignKey<PromoterPicture>(p=>p.PromoterId)
+                .HasPrincipalKey<Promoter>(p=>p.Id);
 
             //Property relationships
             modelBuilder.Entity<Property>()
@@ -75,6 +83,13 @@ namespace Propelo.Data
                 .WithOne(p=>p.Apartment)
                 .HasForeignKey(p=>p.ApartmentID)
                 .HasPrincipalKey(p=>p.Id);
+
+            //Setting relationships
+            modelBuilder.Entity<Setting>()
+                .HasOne(p=>p.Logo)
+                .WithOne(p=>p.Setting)
+                .HasForeignKey<Logo>(p=>p.SettingId)
+                .HasPrincipalKey<Setting>(p=>p.Id);
 
         }
 

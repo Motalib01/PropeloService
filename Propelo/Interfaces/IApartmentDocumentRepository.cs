@@ -1,15 +1,15 @@
-﻿using Propelo.Models;
+﻿using Propelo.DTO;
+using Propelo.Models;
+using System.Reflection.Metadata;
 
 namespace Propelo.Interfaces
 {
     //Mabey
     public interface IApartmentDocumentRepository
     {
-        ApartmentDocument GetApartmentDocument(int apartmentDocumentId);
-        bool ApartmentDocumentExists(int apartmentDocumentId);
-        bool CreateApartmentDocument(ApartmentDocument apartmentDocument);
-        bool UpdateApartmentDocument(ApartmentDocument apartmentDocument);
-        bool DeleteApartmentDocument(ApartmentDocument apartmentDocument);
-        bool Save();
+        Task<ApartmentDocument>CreateDocumentAsync(ApartmentDocumentDTO apartmentDocumentDTO);
+        Task<IEnumerable<ApartmentDocument>> GetDocumentsAsync();
+        Task<ApartmentDocument> GetDocumentByIdAsync(int id);
+        Task<bool> SaveAllAsync();
     }
 }

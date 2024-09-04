@@ -1,10 +1,13 @@
-﻿namespace Propelo.Models
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Propelo.Models
 {
     public class ApartmentDocument
     {
         public int Id { get; set; }
-        public string? Name { get; set; }
-        public byte[]? Document { get; set; }
+        public string DocumentName { get; set; }  
+        public string DocumentPath { get; set; }
+        public long DocumentSize { get; set; }
 
         //many to one
         public int? ApartmentId { get; set; }

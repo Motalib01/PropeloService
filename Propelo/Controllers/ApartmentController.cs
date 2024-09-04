@@ -101,10 +101,7 @@ namespace Propelo.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult CreateApartment([FromBody] ApartmentDTO apartmentCreate)
-        {
-            if(apartmentCreate == null)
-                return BadRequest(ModelState);
-
+        {  
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 

@@ -1,15 +1,14 @@
-﻿using Propelo.Models;
+﻿using Propelo.DTO;
+using Propelo.Models;
 
 namespace Propelo.Interfaces
 {
     //Maybe
     public interface IPropertyPictureRepository
     {
-        PropertyPicture GetPropertyPicture(int propertyPictureId);
-        bool PropertyPictureExists(int propertyPictureId);
-        bool CreatePropertyPicture(PropertyPicture propertyPicture);
-        bool UpdatePropertyPicture(PropertyPicture propertyPicture);
-        bool DeletePropertyPicture(PropertyPicture propertyPicture);
-        bool Save();
+        Task<PropertyPicture> CreatePropertyPictureAsync(PropertyPictureDTO propertyPictureDTO);
+        Task<IEnumerable<PropertyPicture>> GetPropertyPicturesAsync();
+        Task<PropertyPicture> GetPropertyPictureByIdAsync(int id);
+        Task<bool> SaveAllAsync();
     }
 }

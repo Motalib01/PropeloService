@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Propelo.DTO;
 using Propelo.Interfaces;
 using Propelo.Models;
+using Propelo.Repository;
 
 namespace Propelo.Controllers
 {
@@ -13,78 +14,42 @@ namespace Propelo.Controllers
     {
         private readonly IApartmentPictureRepository _apartmentPictureRepository;
         private readonly IMapper _mapper;
-
         public ApartmentPictureController(IApartmentPictureRepository apartmentPictureRepository, IMapper mapper)
         {
             _apartmentPictureRepository = apartmentPictureRepository;
             _mapper = mapper;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetPicturets()
+        {
+            var Picturets = await _apartmentPictureRepository.GetPicturesAsync();
+            return Ok(Picturets);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPicturetById(int id)
+        {
+            var Picturet = await _apartmentPictureRepository.GetPictureByIdAsync(id);
+
+            if (Picturet == null)
+                return NotFound();
+
+            return Ok(Picturet);
+        }
 
         [HttpPost]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult CreateApartmentPicture([FromBody] ApartmentPictureDTO apartmentPictureCreate)
+        public async Task<IActionResult> CreatePicturet([FromForm] ApartmentPictureDTO PicturetDto)
         {
-            if (apartmentPictureCreate == null)
-                return BadRequest(ModelState);
+            var Picturet = await _apartmentPictureRepository.CreatePictureAsync(PicturetDto);
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (Picturet == null)
+                return StatusCode(500, "File Upload Failed");
 
-            var apartmentPictureToCreate = _mapper.Map<ApartmentPicture>(apartmentPictureCreate);
+            if (await _apartmentPictureRepository.SaveAllAsync())
+                return Ok("File Upload Successful");
 
-            if (!_apartmentPictureRepository.CreateApartmentPicture(apartmentPictureToCreate))
-            {
-                ModelState.AddModelError("", $"Something went wrong saving the apartment picture {apartmentPictureToCreate.Id}");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok("Successfully created");
+            return StatusCode(500, "Saving to Database Failed");
         }
 
-        [HttpPut("{apartmentPictureId}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult UpdateApartmentPicture(int apartmentPictureId, [FromBody] ApartmentPictureDTO apartmentPictureUpdate)
-        {
-            if (apartmentPictureUpdate == null || apartmentPictureId != apartmentPictureUpdate.Id)
-                return BadRequest(ModelState);
-
-            if (!_apartmentPictureRepository.ApartmentPictureExists(apartmentPictureId))
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var apartmentPictureToUpdate = _mapper.Map<ApartmentPicture>(apartmentPictureUpdate);
-
-            if (!_apartmentPictureRepository.UpdateApartmentPicture(apartmentPictureToUpdate))
-            {
-                ModelState.AddModelError("", $"Something went wrong updating the apartment picture {apartmentPictureToUpdate.Id}");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok("Successfully updated");
-        }
-
-        [HttpDelete("{apartmentPictureId}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public IActionResult DeleteApartmentPicture(int apartmentPictureId)
-        {
-            if (!_apartmentPictureRepository.ApartmentPictureExists(apartmentPictureId))
-                return NotFound();
-
-            var apartmentPictureToDelete = _apartmentPictureRepository.GetApartmentPicture(apartmentPictureId);
-
-            if (!_apartmentPictureRepository.DeleteApartmentPicture(apartmentPictureToDelete))
-            {
-                ModelState.AddModelError("", $"Something went wrong deleting the apartment picture {apartmentPictureId}");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok("Successfully deleted");
-        }
     }
 }

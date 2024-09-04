@@ -1,50 +1,66 @@
-﻿using Propelo.Data;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Propelo.Data;
+using Propelo.DTO;
 using Propelo.Interfaces;
 using Propelo.Models;
+using System.IO;
+using System.Reflection.Metadata;
+using System.Xml.Linq;
 
 namespace Propelo.Repository
 {
     public class ApartmentDocumentRepository : IApartmentDocumentRepository
     {
         private readonly ApplicationDBContext _context;
+        private readonly IMapper _mapper;
 
-        public ApartmentDocumentRepository(ApplicationDBContext context)
+        public ApartmentDocumentRepository(ApplicationDBContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public bool ApartmentDocumentExists(int apartmentDocumentId)
+        public async Task<ApartmentDocument> CreateDocumentAsync(ApartmentDocumentDTO apartmentDocumentDTO)
         {
-            return _context.ApartmentDocuments.Any(a=>a.Id == apartmentDocumentId);
+            var document = _mapper.Map<ApartmentDocument>(apartmentDocumentDTO);
+
+            // Save the file to the server
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            string filePath = Path.Combine(path, document.DocumentName);
+
+            // Save the file to the path
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await apartmentDocumentDTO.Document.CopyToAsync(stream);
+            }
+
+            document.DocumentPath = filePath;
+
+            _context.ApartmentDocuments.Add(document);
+
+            return document;
         }
 
-        public bool CreateApartmentDocument(ApartmentDocument apartmentDocument)
+        public async Task<ApartmentDocument> GetDocumentByIdAsync(int id)
         {
-            _context.Add(apartmentDocument);
-            return Save();
+            return await _context.ApartmentDocuments.Where(a => a.Id == id).FirstOrDefaultAsync();
         }
 
-        public bool DeleteApartmentDocument(ApartmentDocument apartmentDocument)
+        public async Task<IEnumerable<ApartmentDocument>> GetDocumentsAsync()
         {
-            _context.Remove(apartmentDocument);
-            return Save();
+            return await _context.ApartmentDocuments.OrderBy(a => a.Id).ToListAsync();
         }
 
-        public ApartmentDocument GetApartmentDocument(int apartmentDocumentId)
+        public async Task<bool> SaveAllAsync()
         {
-            return _context.ApartmentDocuments.Where(a=>a.Id == apartmentDocumentId).FirstOrDefault();
-        }
-
-        public bool Save()
-        {
-            var save= _context.SaveChanges();
-            return save>0? true: false;
-        }
-
-        public bool UpdateApartmentDocument(ApartmentDocument apartmentDocument)
-        {
-            _context.Update(apartmentDocument);
-            return Save();
+            var save = await _context.SaveChangesAsync();
+            return save > 0? true:false ;
         }
     }
 }

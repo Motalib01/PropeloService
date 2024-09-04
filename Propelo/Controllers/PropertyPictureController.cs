@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Propelo.DTO;
 using Propelo.Interfaces;
 using Propelo.Models;
+using Propelo.Repository;
 
 namespace Propelo.Controllers
 {
@@ -19,72 +21,37 @@ namespace Propelo.Controllers
             _propertyPictureRepository = propertyPictureRepository;
             _mapper = mapper;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetPicturets()
+        {
+            var Picturets = await _propertyPictureRepository.GetPropertyPicturesAsync();
+            return Ok(Picturets);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPropertyPicturesAsync(int id)
+        {
+            var Picturet = await _propertyPictureRepository.GetPropertyPictureByIdAsync(id);
+
+            if (Picturet == null)
+                return NotFound();
+
+            return Ok(Picturet);
+        }
 
         [HttpPost]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult CreatePropertyPicture([FromBody] PropertyPictureDTO propertyPictureCreate)
+        public async Task<IActionResult> CreatePicturet([FromForm] PropertyPictureDTO PicturetDto)
         {
-            if (propertyPictureCreate == null)
-                return BadRequest(ModelState);
+            var Picturet = await _propertyPictureRepository.CreatePropertyPictureAsync(PicturetDto);
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (Picturet == null)
+                return StatusCode(500, "File Upload Failed");
 
-            var propertyPictureToCreate = _mapper.Map<PropertyPicture>(propertyPictureCreate);
+            if (await _propertyPictureRepository.SaveAllAsync())
+                return Ok("File Upload Successful");
 
-            if (!_propertyPictureRepository.CreatePropertyPicture(propertyPictureToCreate))
-            {
-                ModelState.AddModelError("", $"Something went wrong saving the property picture {propertyPictureToCreate.Id}");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok("Successfully created");
+            return StatusCode(500, "Saving to Database Failed");
         }
 
-        [HttpPut("{propertyPictureId}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult UpdatePropertyPicture(int propertyPictureId, [FromBody] PropertyPictureDTO propertyPictureUpdate)
-        {
-            if (propertyPictureUpdate == null || propertyPictureId != propertyPictureUpdate.Id)
-                return BadRequest(ModelState);
-
-            if (!_propertyPictureRepository.PropertyPictureExists(propertyPictureId))
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var propertyPictureToUpdate = _mapper.Map<PropertyPicture>(propertyPictureUpdate);
-
-            if (!_propertyPictureRepository.UpdatePropertyPicture(propertyPictureToUpdate))
-            {
-                ModelState.AddModelError("", $"Something went wrong updating the property picture {propertyPictureToUpdate.Id}");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok("Successfully updated");
-        }
-
-        [HttpDelete("{propertyPictureId}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public IActionResult DeletePropertyPicture(int propertyPictureId)
-        {
-            if (!_propertyPictureRepository.PropertyPictureExists(propertyPictureId))
-                return NotFound();
-
-            var propertyPictureToDelete = _propertyPictureRepository.GetPropertyPicture(propertyPictureId);
-
-            if (!_propertyPictureRepository.DeletePropertyPicture(propertyPictureToDelete))
-            {
-                ModelState.AddModelError("", $"Something went wrong deleting the property picture {propertyPictureId}");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok("Successfully deleted");
-        }
     }
 }

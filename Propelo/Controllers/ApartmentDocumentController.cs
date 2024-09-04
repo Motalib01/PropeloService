@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Propelo.DTO;
 using Propelo.Interfaces;
 using Propelo.Models;
+using Propelo.Repository;
 
 namespace Propelo.Controllers
 {
@@ -20,71 +21,36 @@ namespace Propelo.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetDocuments()
+        {
+            var documents = await _apartmentDocumentRepository.GetDocumentsAsync();
+            return Ok(documents);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetDocumentById(int id)
+        {
+            var document = await _apartmentDocumentRepository.GetDocumentByIdAsync(id);
+
+            if (document == null)
+                return NotFound();
+
+            return Ok(document);
+        }
+
         [HttpPost]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult CreateApartmentDocument([FromBody] ApartmentDocumentDTO apartmentDocumentCreate)
+        public async Task<IActionResult> CreateDocument([FromForm] ApartmentDocumentDTO documentDto)
         {
-            if (apartmentDocumentCreate == null)
-                return BadRequest(ModelState);
+            var document = await _apartmentDocumentRepository.CreateDocumentAsync(documentDto);
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (document == null)
+                return StatusCode(500, "File Upload Failed");
 
-            var apartmentDocumentToCreate = _mapper.Map<ApartmentDocument>(apartmentDocumentCreate);
+            if (await _apartmentDocumentRepository.SaveAllAsync())
+                return Ok("File Upload Successful");
 
-            if (!_apartmentDocumentRepository.CreateApartmentDocument(apartmentDocumentToCreate))
-            {
-                ModelState.AddModelError("", $"Something went wrong saving the apartment document {apartmentDocumentToCreate.Name}");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok("Successfully created");
-        }
-
-        [HttpPut("{apartmentDocumentId}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult UpdateApartmentDocument(int apartmentDocumentId, [FromBody] ApartmentDocumentDTO apartmentDocumentUpdate)
-        {
-            if (apartmentDocumentUpdate == null || apartmentDocumentId != apartmentDocumentUpdate.Id)
-                return BadRequest(ModelState);
-
-            if (!_apartmentDocumentRepository.ApartmentDocumentExists(apartmentDocumentId))
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var apartmentDocumentToUpdate = _mapper.Map<ApartmentDocument>(apartmentDocumentUpdate);
-
-            if (!_apartmentDocumentRepository.UpdateApartmentDocument(apartmentDocumentToUpdate))
-            {
-                ModelState.AddModelError("", $"Something went wrong updating the apartment document {apartmentDocumentToUpdate.Name}");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok("Successfully updated");
-        }
-
-        [HttpDelete("{apartmentDocumentId}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public IActionResult DeleteApartmentDocument(int apartmentDocumentId)
-        {
-            if (!_apartmentDocumentRepository.ApartmentDocumentExists(apartmentDocumentId))
-                return NotFound();
-
-            var apartmentDocumentToDelete = _apartmentDocumentRepository.GetApartmentDocument(apartmentDocumentId);
-
-            if (!_apartmentDocumentRepository.DeleteApartmentDocument(apartmentDocumentToDelete))
-            {
-                ModelState.AddModelError("", $"Something went wrong deleting the apartment document with id {apartmentDocumentId}");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok("Successfully deleted");
+            return StatusCode(500, "Saving to Database Failed");
         }
     }
 }

@@ -7,20 +7,19 @@ using Propelo.Models;
 
 namespace Propelo.Repository
 {
-    public class ApartmentPictureRepository : IApartmentPictureRepository
+    public class PromoterPictureRepository : IPromoterPictureRepository
     {
         private readonly ApplicationDBContext _context;
         private readonly IMapper _mapper;
 
-        public ApartmentPictureRepository(ApplicationDBContext context, IMapper mapper)
+        public PromoterPictureRepository(ApplicationDBContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
-
-        public async Task<ApartmentPicture> CreatePictureAsync(ApartmentPictureDTO apartmentPictureDTO)
+        public async Task<PromoterPicture> CreatePromoterPictureAsync(PromoterPictureDTO promoterPictureDTO)
         {
-            var picture = _mapper.Map<ApartmentPicture>(apartmentPictureDTO);
+            var picture = _mapper.Map<PromoterPicture>(promoterPictureDTO);
 
             // Save the file to the server
             string path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
@@ -34,30 +33,30 @@ namespace Propelo.Repository
             // Save the file to the path
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await apartmentPictureDTO.Picture.CopyToAsync(stream);
+                await promoterPictureDTO.Picture.CopyToAsync(stream);
             }
 
             picture.PicturePath = filePath;
 
-            _context.ApartmentPictures.Add(picture);
+            _context.PromoterPictures.Add(picture);
 
             return picture;
         }
 
-        public async Task<ApartmentPicture> GetPictureByIdAsync(int id)
+        public async Task<PromoterPicture> GetPromoterPictureByIdAsync(int id)
         {
-            return await _context.ApartmentPictures.Where(a => a.Id == id).FirstOrDefaultAsync();
+            return await _context.PromoterPictures.Where(a => a.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<ApartmentPicture>> GetPicturesAsync()
+        public async Task<IEnumerable<PromoterPicture>> GetPromoterPicturesAsync()
         {
-            return await _context.ApartmentPictures.OrderBy(a => a.Id).ToListAsync();
+            return await _context.PromoterPictures.OrderBy(a => a.Id).ToListAsync();
         }
 
         public async Task<bool> SaveAllAsync()
         {
-            var save = await _context.SaveChangesAsync();
-            return save > 0 ? true : false;
+            var save= await _context.SaveChangesAsync();
+            return save >0 ? true: false;
         }
     }
 }

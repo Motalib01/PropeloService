@@ -25,7 +25,11 @@ namespace Propelo.Controllers
         [ProducesResponseType (200, Type=typeof(IEnumerable<Property>))]
         public IActionResult GetProperties()
         {
-            var properties = _mapper.Map<List<PropertyDTO>>(_propertyRepository.GetProperties);
+            //var properties = _propertyRepository.GetProperties();
+            //var propertiesDTO = _mapper.Map<List<PropertyDTO>>(properties);
+
+            var properties = _mapper.Map<List<PropertyDTO>>(_propertyRepository.GetProperties());
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
