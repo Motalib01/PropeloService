@@ -51,5 +51,24 @@ namespace Propelo.Controllers
 
             return StatusCode(500, "Saving to Database Failed");
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateLogo(int id, [FromForm] PromoterPictureDTO promoterPictureDTO)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid logo ID.");
+            }
+
+            var logo = await _promoterPictureRepository.UpdatePromoterPicture(promoterPictureDTO, id);
+
+            if (logo == null)
+                return StatusCode(500, "File Upload Failed");
+
+            if (await _promoterPictureRepository.SaveAllAsync())
+                return Ok("File Upload Successful");
+
+            return StatusCode(500, "Saving to Database Failed");
+        }
     }
 }

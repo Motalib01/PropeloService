@@ -51,5 +51,30 @@ namespace Propelo.Controllers
 
             return StatusCode(500, "Saving to Database Failed");
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateLogo(int id, [FromForm] LogoDTO logoDTO)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid logo ID.");
+            }
+
+            try
+            {
+                var updatedLogo = await _logoRepository.UpdateLogoAsync(logoDTO, id);
+                if (updatedLogo == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok("File update Successful");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (not shown here) and return a suitable error response
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

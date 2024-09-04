@@ -8,6 +8,7 @@ namespace Propelo.Interfaces
         Task<Logo> CreateLogoAsync(LogoDTO logoDTO);
         Task<IEnumerable<Logo>> GetLogosAsync();
         Task<Logo> GetLogoByIdAsync(int id);
+        Task<Logo> UpdateLogoAsync(LogoDTO logoDTO, int logoId);
         Task<bool> SaveAllAsync();
     }
 }
