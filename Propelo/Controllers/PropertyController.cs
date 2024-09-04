@@ -52,38 +52,6 @@ namespace Propelo.Controllers
             return Ok(property);
         }
 
-        [HttpGet("apartments/{apartmentId}")]
-        [ProducesResponseType(200, Type=typeof(Property))]
-        [ProducesResponseType(400)]
-        public IActionResult GetPropertyByApartment(int apartmentId)
-        {
-            if (!_propertyRepository.PropertyExists(apartmentId))
-                return NotFound();
-
-            var property = _mapper.Map<List<PropertyDTO>>(_propertyRepository.GetPropertyByApartment(apartmentId));
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(property);
-        }
-
-        [HttpGet("property-pictures/{propertyId}")]
-        [ProducesResponseType(200, Type=typeof(IEnumerable<PropertyPicture>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetPropertyPicturesByProperty(int propertyId)
-        {
-            if (!_propertyRepository.PropertyExists(propertyId))
-                return NotFound();
-
-            var propertyPictures = _mapper.Map<List<PropertyPictureDTO>>(_propertyRepository.GetPropertyPicturesByProperty(propertyId));
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(propertyPictures);
-        }
-
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]

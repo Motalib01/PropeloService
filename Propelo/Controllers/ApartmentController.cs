@@ -33,6 +33,7 @@ namespace Propelo.Controllers
             return Ok(apartments);
         }
 
+        //get apartment by id
         [HttpGet("{apartmentId}")]
         [ProducesResponseType(200, Type = typeof(Apartment))]
         [ProducesResponseType(400)]
@@ -47,38 +48,6 @@ namespace Propelo.Controllers
                 return BadRequest(ModelState);
 
             return Ok(apartment);
-        }
-
-        [HttpGet("apartment-pictures/{apartmentId}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<ApartmentPicture>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetApartmentPicturesByApartment(int apartmentId)
-        {
-            if (!_apartmentRepository.ApartmentExists(apartmentId))
-                return NotFound();
-
-            var apartmentPictures = _mapper.Map<List<ApartmentPictureDTO>>(_apartmentRepository.GetApartmentPicturesByApartment(apartmentId));
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(apartmentPictures);
-        }
-
-        [HttpGet("apartment-documents/{apartmentId}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<ApartmentDocument>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetApartmentDocumentsByApartment(int apartmentId)
-        {
-            if (!_apartmentRepository.ApartmentExists(apartmentId))
-                return NotFound();
-
-            var apartmentDocuments = _mapper.Map<List<ApartmentDocumentDTO>>(_apartmentRepository.GetApartmentDocumentsByApartment(apartmentId));
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(apartmentDocuments);
         }
 
         [HttpGet("areas/{apartmentId}")]
