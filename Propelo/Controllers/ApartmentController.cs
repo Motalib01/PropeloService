@@ -8,8 +8,8 @@ using Propelo.Models;
 
 namespace Propelo.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ApartmentController : ControllerBase
     {
         private readonly IApartmentRepository _apartmentRepository;
@@ -42,7 +42,7 @@ namespace Propelo.Controllers
             if (!_apartmentRepository.ApartmentExists(apartmentId))
                 return NotFound();
 
-            var apartment = _mapper.Map<List<ApartmentDTO>>(_apartmentRepository.GetApartment(apartmentId));
+            var apartment = _mapper.Map<ApartmentDTO>(_apartmentRepository.GetApartment(apartmentId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

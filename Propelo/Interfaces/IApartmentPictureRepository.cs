@@ -6,7 +6,7 @@ namespace Propelo.Interfaces
     //Mabey
     public interface IApartmentPictureRepository
     {
-        Task<ApartmentPicture> CreatePictureAsync(ApartmentPictureDTO apartmentPictureDTO);
+        Task<List<ApartmentPicture>> CreateApartmentPictureAsync(ApartmentPictureDTO apartmentPictureDTO);
         Task<IEnumerable<ApartmentPicture>> GetPicturesAsync();
         Task<ApartmentPicture> GetPictureByIdAsync(int id);
         Task<bool> SaveAllAsync();

@@ -2,7 +2,7 @@
 {
     public class ApartmentDocumentDTO
     {
-        public IFormFile? Document { get; set; }
+        public List<IFormFile>? Documents { get; set; }
         public int? ApartmentId { get; set; }
     }
 }

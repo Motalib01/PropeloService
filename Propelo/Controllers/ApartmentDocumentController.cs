@@ -42,13 +42,19 @@ namespace Propelo.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateDocument([FromForm] ApartmentDocumentDTO documentDto)
         {
-            var document = await _apartmentDocumentRepository.CreateDocumentAsync(documentDto);
+            if (documentDto.Documents == null || !documentDto.Documents.Any())
+            {
+                return BadRequest("No files uploaded.");
+            }
 
-            if (document == null)
+            // Call the repository method to save multiple pictures
+            var pictures = await _apartmentDocumentRepository.CreateDocumentAsync(documentDto);
+
+            if (pictures == null)
                 return StatusCode(500, "File Upload Failed");
 
             if (await _apartmentDocumentRepository.SaveAllAsync())
-                return Ok("File Upload Successful");
+                return Ok("Files Uploaded Successfully");
 
             return StatusCode(500, "Saving to Database Failed");
         }

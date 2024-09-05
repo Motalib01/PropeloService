@@ -7,7 +7,7 @@ namespace Propelo.Interfaces
     //Mabey
     public interface IApartmentDocumentRepository
     {
-        Task<ApartmentDocument>CreateDocumentAsync(ApartmentDocumentDTO apartmentDocumentDTO);
+        Task<List<ApartmentDocument>>CreateDocumentAsync(ApartmentDocumentDTO apartmentDocumentDTO);
         Task<IEnumerable<ApartmentDocument>> GetDocumentsAsync();
         Task<ApartmentDocument> GetDocumentByIdAsync(int id);
         Task<bool> SaveAllAsync();

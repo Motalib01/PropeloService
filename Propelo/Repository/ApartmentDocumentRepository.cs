@@ -21,30 +21,40 @@ namespace Propelo.Repository
             _mapper = mapper;
         }
 
-        public async Task<ApartmentDocument> CreateDocumentAsync(ApartmentDocumentDTO apartmentDocumentDTO)
+        public async Task<List<ApartmentDocument>> CreateDocumentAsync(ApartmentDocumentDTO apartmentDocumentDTO)
         {
-            var document = _mapper.Map<ApartmentDocument>(apartmentDocumentDTO);
-
-            // Save the file to the server
+            var documents = new List<ApartmentDocument>();
             string path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
-            string filePath = Path.Combine(path, document.DocumentName);
-
-            // Save the file to the path
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            foreach (var file in apartmentDocumentDTO.Documents)
             {
-                await apartmentDocumentDTO.Document.CopyToAsync(stream);
+                var document = new ApartmentDocument
+                {
+                    ApartmentId = apartmentDocumentDTO.ApartmentId,
+                    DocumentName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName),
+                    // Set the PicturePath and PictureSize manually
+                    DocumentSize = file.Length
+                };
+
+                string filePath = Path.Combine(path, document.DocumentName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                document.DocumentPath = filePath;
+
+                documents.Add(document);
+                _context.ApartmentDocuments.Add(document);
             }
 
-            document.DocumentPath = filePath;
-
-            _context.ApartmentDocuments.Add(document);
-
-            return document;
+            return documents;
         }
 
         public async Task<ApartmentDocument> GetDocumentByIdAsync(int id)

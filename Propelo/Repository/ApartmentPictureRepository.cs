@@ -18,30 +18,40 @@ namespace Propelo.Repository
             _mapper = mapper;
         }
 
-        public async Task<ApartmentPicture> CreatePictureAsync(ApartmentPictureDTO apartmentPictureDTO)
+        public async Task<List<ApartmentPicture>> CreateApartmentPictureAsync(ApartmentPictureDTO apartmentPictureDTO)
         {
-            var picture = _mapper.Map<ApartmentPicture>(apartmentPictureDTO);
-
-            // Save the file to the server
+            var pictures = new List<ApartmentPicture>();
             string path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
-            string filePath = Path.Combine(path, picture.PictureName);
-
-            // Save the file to the path
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            foreach (var file in apartmentPictureDTO.Pictures)
             {
-                await apartmentPictureDTO.Picture.CopyToAsync(stream);
+                var picture = new ApartmentPicture
+                {
+                    ApartmentId = apartmentPictureDTO.ApartmentId,
+                    PictureName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName),
+                    // Set the PicturePath and PictureSize manually
+                    PictureSize = file.Length
+                };
+
+                string filePath = Path.Combine(path, picture.PictureName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                picture.PicturePath = filePath;
+
+                pictures.Add(picture);
+                _context.ApartmentPictures.Add(picture);
             }
 
-            picture.PicturePath = filePath;
-
-            _context.ApartmentPictures.Add(picture);
-
-            return picture;
+            return pictures;
         }
 
         public async Task<ApartmentPicture> GetPictureByIdAsync(int id)

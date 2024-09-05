@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Propelo.Data;
 using Propelo.DTO;
@@ -18,30 +19,40 @@ namespace Propelo.Repository
             _mapper = mapper;
         }
 
-        public async Task<PropertyPicture> CreatePropertyPictureAsync(PropertyPictureDTO PropertyPictureDTO)
+        public async Task<List<PropertyPicture>> CreatePropertyPictureAsync(PropertyPictureDTO propertyPictureDTO)
         {
-            var picture = _mapper.Map<PropertyPicture>(PropertyPictureDTO);
-
-            // Save the file to the server
+            var pictures = new List<PropertyPicture>();
             string path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
-            string filePath = Path.Combine(path, picture.PictureName);
-
-            // Save the file to the path
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            foreach (var file in propertyPictureDTO.Pictures)
             {
-                await PropertyPictureDTO.Picture.CopyToAsync(stream);
+                var picture = new PropertyPicture
+                {
+                    PropertyId = propertyPictureDTO.PropertyId,
+                    PictureName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName),
+                    // Set the PicturePath and PictureSize manually
+                    PictureSize = file.Length
+                };
+
+                string filePath = Path.Combine(path, picture.PictureName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                picture.PicturePath = filePath;
+
+                pictures.Add(picture);
+                _context.PropertyPictures.Add(picture);
             }
 
-            picture.PicturePath = filePath;
-
-            _context.PropertyPictures.Add(picture);
-
-            return picture;
+            return pictures;
         }
 
         public async Task<PropertyPicture> GetPropertyPictureByIdAsync(int id)

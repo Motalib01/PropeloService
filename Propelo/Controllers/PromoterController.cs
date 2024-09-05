@@ -41,7 +41,7 @@ namespace Propelo.Controllers
             if(!_promoterRepository.PromoterExists(promoterId))
                 return NotFound();
 
-            var promoter = _mapper.Map<List<PromoterDTO>>(_promoterRepository.GetPromoter(promoterId));
+            var promoter = _mapper.Map<PromoterDTO>(_promoterRepository.GetPromoter(promoterId));
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);

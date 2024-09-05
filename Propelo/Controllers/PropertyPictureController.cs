@@ -40,15 +40,21 @@ namespace Propelo.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePicturet([FromForm] PropertyPictureDTO PicturetDto)
+        public async Task<IActionResult> CreatePictures([FromForm] PropertyPictureDTO pictureDto)
         {
-            var Picturet = await _propertyPictureRepository.CreatePropertyPictureAsync(PicturetDto);
+            if (pictureDto.Pictures == null || !pictureDto.Pictures.Any())
+            {
+                return BadRequest("No files uploaded.");
+            }
 
-            if (Picturet == null)
+            // Call the repository method to save multiple pictures
+            var pictures = await _propertyPictureRepository.CreatePropertyPictureAsync(pictureDto);
+
+            if (pictures == null)
                 return StatusCode(500, "File Upload Failed");
 
             if (await _propertyPictureRepository.SaveAllAsync())
-                return Ok("File Upload Successful");
+                return Ok("Files Uploaded Successfully");
 
             return StatusCode(500, "Saving to Database Failed");
         }

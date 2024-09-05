@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Propelo.DTO;
 using Propelo.Interfaces;
 using Propelo.Models;
+using Propelo.Repository;
 
 namespace Propelo.Controllers
 {
@@ -44,7 +45,7 @@ namespace Propelo.Controllers
             if (!_propertyRepository.PropertyExists(propertyId))
                 return NotFound();
 
-            var property = _mapper.Map<List<PropertyDTO>>(_propertyRepository.GetProperty(propertyId));
+            var property = _mapper.Map<PropertyDTO>(_propertyRepository.GetProperty(propertyId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -71,13 +72,19 @@ namespace Propelo.Controllers
             return Ok("Successfully created");
         }
 
-        [HttpPut]
+        [HttpPut("{propertyId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreatePropertyPicture([FromBody] PropertyDTO propertyUpdate)
+        public IActionResult CreatePropertyPicture(int propertyId, [FromBody] PropertyDTO propertyUpdate)
         {
             if (propertyUpdate == null)
                 return BadRequest(ModelState);
+
+            if (propertyId != propertyUpdate.Id)
+                return BadRequest(ModelState);
+
+            if (!_propertyRepository.PropertyExists(propertyId))
+                return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

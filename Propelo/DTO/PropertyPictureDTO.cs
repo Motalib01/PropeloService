@@ -2,7 +2,7 @@
 {
     public class PropertyPictureDTO
     {
-        public IFormFile? Picture { get; set; }
+        public List<IFormFile>? Pictures { get; set; }
         public int? PropertyId { get; set; }
     }
 }
