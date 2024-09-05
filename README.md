@@ -1,56 +1,70 @@
 # PropeloService
-PropeloService is a backend project built using ASP.NET Core Web API, Entity Framework, and SQL Server. This application is designed to handle real estate data, managing properties, apartments, promoters, and related entities. It follows the repository pattern for data management and separation of concerns.
 
-# Features
-ASP.NET Core Web API: The backend framework for creating RESTful services.
-Entity Framework Core: ORM (Object-Relational Mapping) to interact with the SQL Server database.
-Repository Pattern: Applied to abstract data access, making the application easier to maintain and extend.
-SQL Server: Used as the primary relational database.
-Domain Structure: Includes Promoters, Properties, Apartments, Pictures, Documents, and more.
-Architecture Overview
-This project uses the repository pattern to keep the data access layer separate from the business logic. Below is an overview of the domain structure based on the class diagram:
+**PropeloService** is a backend project built using ASP.NET Core Web API, Entity Framework, and SQL Server. This application is designed to manage real estate data, including properties, apartments, promoters, and related entities. It follows the repository pattern to ensure clean architecture and separation of concerns.
 
-# Key Entities
-User: Stores information for login credentials (Username, Password).
-Promoter: Represents a real estate promoter with details such as name, contact information, and a profile picture.
-Property: Stores information about properties like geographical location, construction dates, and the number of apartments.
-Apartment: Defines individual apartments under properties, including rooms, surface area, and descriptions.
-Areas: Contains information on apartment areas like surface size and room details.
-Document: Manages the documents related to apartments or properties, with references to files.
-Picture: Stores pictures associated with Promoters, Properties, and Apartments.
-Settings: Holds application-wide settings such as the name and logo of the system.
+## Features
 
-# Relationships
-Promoter and User: One-to-one relationship.
-Property and Promoter: One-to-one relationship.
-Property and Apartment: One-to-many relationship.
-Apartment and Picture: One-to-many relationship.
-Apartment and Document: One-to-many relationship.
+- **ASP.NET Core Web API**: Backend framework for building RESTful services.
+- **Entity Framework Core**: ORM for database interaction.
+- **Repository Pattern**: Abstracts data access to maintainable and extendable architecture.
+- **SQL Server**: Primary relational database for persisting data.
+- **Domain Structure**: Manages entities such as Promoters, Properties, Apartments, Pictures, Documents, and more.
 
-# Project Structure
-Controllers: Handle HTTP requests and route them to the services or repositories.
-Services: Business logic and orchestration of different operations.
-Repositories: Data access layer, using Entity Framework to interact with the database.
-Models: Entity models that represent the database tables.
-DTOs: Data Transfer Objects used to encapsulate the data transferred between the client and the server.
+## Architecture Overview
 
-# Database Schema
-The following are the main tables created in the SQL Server database:
+This project follows the repository pattern to separate the data access layer from business logic. The class diagram below illustrates the key domain entities and their relationships.
 
-Users
-Promoters
-Properties
-Apartments
-Areas
-Pictures
-Documents
-Settings
-Technologies
-ASP.NET Core Web API
-Entity Framework Core
-SQL Server
-Repository Pattern
-AutoMapper (for mapping DTOs and models)
-Dependency Injection (for services and repositories)
-# propelo class diagram
-![propelo_class diagram](https://github.com/user-attachments/assets/eebc42aa-9ac6-49cf-9df9-c854a14cd9b4)
+### Key Entities
+
+- **User**: Stores user login credentials (Username, Password).
+- **Promoter**: Represents a real estate promoter with details such as name, contact information, and profile picture.
+- **Property**: Stores property information such as address, geographical location, construction dates, and the number of apartments.
+- **Apartment**: Defines individual apartments under properties, including rooms, surface area, floor, and descriptions.
+- **Areas**: Represents apartment areas such as surface size and room details.
+- **Document**: Manages documents related to apartments or properties, including file references.
+- **Picture**: Stores pictures associated with Promoters, Properties, and Apartments.
+- **Settings**: Holds global settings for the system, including the application name and logo.
+
+### Entity Relationships
+
+- **Promoter and User**: One-to-one relationship.
+- **Property and Promoter**: One-to-one relationship.
+- **Property and Apartment**: One-to-many relationship.
+- **Apartment and Picture**: One-to-many relationship.
+- **Apartment and Document**: One-to-many relationship.
+
+## Project Structure
+
+- **Controllers**: Handle HTTP requests and interact with services or repositories.
+- **Services**: Contain business logic and coordinate different operations.
+- **Repositories**: Data access layer using Entity Framework to perform database interactions.
+- **Models**: Entity models representing the database tables.
+- **DTOs**: Data Transfer Objects encapsulating data for transfer between the server and client.
+
+## Database Schema
+
+Here are the main tables in the SQL Server database:
+
+- `Users`
+- `Promoters`
+- `Properties`
+- `Apartments`
+- `Areas`
+- `Pictures`
+- `Documents`
+- `Settings`
+
+## Technologies
+
+- **ASP.NET Core Web API**: Backend framework for building services.
+- **Entity Framework Core**: ORM to simplify database operations.
+- **SQL Server**: Database for persisting application data.
+- **Repository Pattern**: Ensures separation of concerns and scalable architecture.
+- **AutoMapper**: Maps data between models and DTOs.
+- **Dependency Injection**: For managing services and repositories.
+
+## Class Diagram
+
+The class diagram below illustrates the relationships between entities in the project.
+
+![Propelo Class Diagram](https://github.com/user-attachments/assets/eebc42aa-9ac6-49cf-9df9-c854a14cd9b4)
