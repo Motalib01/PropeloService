@@ -1,6 +1,6 @@
 # PropeloService
 
-**PropeloService** is a backend project built using ASP.NET Core Web API, Entity Framework, and SQL Server. This application is designed to manage real estate data, including properties, apartments, promoters, and related entities. It follows the repository pattern to ensure clean architecture and separation of concerns.
+**PropeloService** is a backend project built using ASP.NET Core Web API, Entity Framework, and SQL Server. This application is designed to manage real estate data, including properties, apartments for promoters, and related entities. It follows the repository pattern to ensure clean architecture and separation of concerns.
 
 ## Features
 
