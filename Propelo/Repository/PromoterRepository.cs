@@ -43,5 +43,11 @@ namespace Propelo.Repository
         {
             return _context.Promoters.Where(p => p.Id == promoterId).FirstOrDefault();
         }
+
+        public bool DeletePromoter(Promoter promoter)
+        {
+            _context.Remove(promoter);
+            return Save();
+        }
     }
 }

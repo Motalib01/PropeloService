@@ -176,6 +176,9 @@ namespace Propelo.Migrations
                     b.Property<int?>("PropertyId")
                         .HasColumnType("int");
 
+                    b.Property<bool?>("Sold")
+                        .HasColumnType("bit");
+
                     b.Property<double?>("Surface")
                         .HasColumnType("float");
 

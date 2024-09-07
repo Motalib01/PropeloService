@@ -11,24 +11,34 @@ namespace Propelo.Repository
     {
         private readonly ApplicationDBContext _context;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PromoterPictureRepository(ApplicationDBContext context, IMapper mapper)
+        public PromoterPictureRepository(ApplicationDBContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mapper = mapper;
+            _httpContextAccessor= httpContextAccessor;
         }
         public async Task<PromoterPicture> CreatePromoterPictureAsync(PromoterPictureDTO promoterPictureDTO)
         {
+            // Map DTO to entity
             var picture = _mapper.Map<PromoterPicture>(promoterPictureDTO);
 
-            // Save the file to the server
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+            if (promoterPictureDTO.Picture == null || promoterPictureDTO.Picture.Length == 0)
+            {
+                throw new InvalidOperationException("No file uploaded.");
+            }
+
+            // Generate a unique file name
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(promoterPictureDTO.Picture.FileName);
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "promoter-pictures");
+
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
-            string filePath = Path.Combine(path, picture.PictureName);
+            var filePath = Path.Combine(path, fileName);
 
             // Save the file to the path
             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -36,11 +46,27 @@ namespace Propelo.Repository
                 await promoterPictureDTO.Picture.CopyToAsync(stream);
             }
 
-            picture.PicturePath = filePath;
+            // Generate the public URL
+            var request = _httpContextAccessor.HttpContext.Request;
+            var fileUrl = $"{request.Scheme}://{request.Host}/promoter-pictures/{fileName}";
 
+            // Update the picture entity with URL
+            picture.PicturePath = fileUrl;
+
+            // Save to database
             _context.PromoterPictures.Add(picture);
 
+            // Ensure changes are saved
+            await _context.SaveChangesAsync();
+
             return picture;
+        }
+
+
+        public Task<bool> DeletePromoterPictureAsync(int id)
+        {
+            _context.PromoterPictures.Remove(_context.PromoterPictures.Find(id));
+            return SaveAllAsync();
         }
 
         public async Task<PromoterPicture> GetPromoterPictureByIdAsync(int id)
@@ -61,36 +87,41 @@ namespace Propelo.Repository
 
         public async Task<PromoterPicture> UpdatePromoterPicture(PromoterPictureDTO promoterPictureDTO, int promoterPictureId)
         {
-            // Retrieve the existing logo from the database
-            var picture = await _context.PromoterPictures.Where(l => l.Id == promoterPictureId).FirstOrDefaultAsync();
+            // Retrieve the existing picture from the database
+            var picture = await _context.PromoterPictures
+                .Where(p => p.Id == promoterPictureId)
+                .FirstOrDefaultAsync();
 
             if (picture == null)
             {
-                // Handle the case where the logo is not found (e.g., throw an exception or return null)
-                throw new Exception("Logo not found");
+                throw new Exception("Picture not found");
             }
 
-            // Update the properties of the logo
+            // Update properties except the picture file path
             _mapper.Map(promoterPictureDTO, picture);
 
-            // Check if a new file is provided
-            if (promoterPictureDTO.Picture != null)
+            if (promoterPictureDTO.Picture != null && promoterPictureDTO.Picture.Length > 0)
             {
-                // Save the new file to the server
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+                // Generate a unique file name for the new picture
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(promoterPictureDTO.Picture.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "promoter-pictures");
+
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }
 
-                // Construct the new file path
-                string newFilePath = Path.Combine(path, picture.PictureName);
+                var filePath = Path.Combine(path, fileName);
 
-                // Save the new file to the path
-                using (var stream = new FileStream(newFilePath, FileMode.Create))
+                // Save the new file
+                using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await promoterPictureDTO.Picture.CopyToAsync(stream);
                 }
+
+                // Generate the new public URL
+                var request = _httpContextAccessor.HttpContext.Request;
+                var fileUrl = $"{request.Scheme}://{request.Host}/promoter-pictures/{fileName}";
 
                 // Delete the old file if it exists
                 if (!string.IsNullOrEmpty(picture.PicturePath) && File.Exists(picture.PicturePath))
@@ -98,17 +129,18 @@ namespace Propelo.Repository
                     File.Delete(picture.PicturePath);
                 }
 
-                // Update the logo path to the new file path
-                picture.PicturePath = newFilePath;
+                // Update the picture entity with the new URL
+                picture.PicturePath = fileUrl;
             }
 
-            // Update the logo entity in the context
+            // Update the picture entity in the context
             _context.PromoterPictures.Update(picture);
 
-            // Save the changes to the database
+            // Save changes to the database
             await _context.SaveChangesAsync();
 
             return picture;
         }
+
     }
 }

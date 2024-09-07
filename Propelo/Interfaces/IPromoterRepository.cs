@@ -10,6 +10,7 @@ namespace Propelo.Interfaces
         bool PromoterExists(int promoterId);
         bool CreatePromoter(Promoter promoter);
         bool UpdatePromoter(Promoter promoter);
+        bool DeletePromoter(Promoter promoter);
         bool Save();
     }
 }

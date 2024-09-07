@@ -12,17 +12,19 @@ namespace Propelo.Repository
     {
         private readonly ApplicationDBContext _context;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PropertyPictureRepository(ApplicationDBContext context, IMapper mapper)
+        public PropertyPictureRepository(ApplicationDBContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<List<PropertyPicture>> CreatePropertyPictureAsync(PropertyPictureDTO propertyPictureDTO)
         {
             var pictures = new List<PropertyPicture>();
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "property-pictures");
 
             if (!Directory.Exists(path))
             {
@@ -31,30 +33,43 @@ namespace Propelo.Repository
 
             foreach (var file in propertyPictureDTO.Pictures)
             {
-                var picture = new PropertyPicture
+                if (file == null || file.Length == 0)
                 {
-                    PropertyId = propertyPictureDTO.PropertyId,
-                    PictureName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName),
-                    // Set the PicturePath and PictureSize manually
-                    PictureSize = file.Length
-                };
+                    throw new InvalidOperationException("One or more files are empty.");
+                }
 
-                string filePath = Path.Combine(path, picture.PictureName);
+                // Generate a unique file name
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                var filePath = Path.Combine(path, fileName);
 
+                // Save the file to the path
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
 
-                picture.PicturePath = filePath;
+                // Generate the public URL
+                var request = _httpContextAccessor.HttpContext.Request;
+                var fileUrl = $"{request.Scheme}://{request.Host}/property-pictures/{fileName}";
+
+                // Create and map the picture entity
+                var picture = new PropertyPicture
+                {
+                    PropertyId = propertyPictureDTO.PropertyId,
+                    PictureName = fileName,
+                    PicturePath = fileUrl,
+                    PictureSize = file.Length
+                };
 
                 pictures.Add(picture);
                 _context.PropertyPictures.Add(picture);
             }
 
+            // Save all pictures to the database
+            await _context.SaveChangesAsync();
+
             return pictures;
         }
-
         public async Task<PropertyPicture> GetPropertyPictureByIdAsync(int id)
         {
             return await _context.PropertyPictures.Where(a => a.Id == id).FirstOrDefaultAsync();

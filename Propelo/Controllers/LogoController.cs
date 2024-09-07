@@ -76,5 +76,21 @@ namespace Propelo.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLogo(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid logo ID.");
+            }
+
+            if (await _logoRepository.DeleteLogoAsync(id))
+            {
+                return Ok("Logo deleted successfully");
+            }
+
+            return StatusCode(500, "Internal server error: Unable to delete logo");
+        }
     }
 }

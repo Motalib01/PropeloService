@@ -34,6 +34,11 @@ namespace Propelo.Repository
             return _context.Areas.Where(a => a.Id == areaId).FirstOrDefault();
         }
 
+        public ICollection<Area> GetAreas()
+        {
+            return _context.Areas.OrderBy(a => a.Id).ToList();
+        }
+
         public bool Save()
         {
             var save = _context.SaveChanges();

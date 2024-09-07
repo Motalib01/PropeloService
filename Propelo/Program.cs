@@ -26,12 +26,20 @@ namespace Propelo
                 options.AddPolicy("AllowReactApp",
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:5173") 
-                              
+                        policy.WithOrigins("http://localhost:5173")
+
                               .AllowAnyHeader()
                               .AllowAnyMethod();
                     });
             });
+
+            builder.Services.AddCors(options =>
+                     {
+                         options.AddPolicy("AllowAll", builder =>
+                         builder.AllowAnyOrigin()
+                                .AllowAnyMethod()
+                                .AllowAnyHeader());
+                     });
 
 
             builder.Services.AddAuthorization();
@@ -56,18 +64,20 @@ namespace Propelo
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            builder.Services.AddScoped<IApartmentDocumentRepository,ApartmentDocumentRepository>();
-            builder.Services.AddScoped<IApartmentPictureRepository,ApartmentPictureRepository>();
-            builder.Services.AddScoped<IApartmentRepository,ApartmentRepository>();
-            builder.Services.AddScoped<IPromoterRepository,PromoterRepository>();
-            builder.Services.AddScoped<IPromoterPictureRepository,PromoterPictureRepository>();
-            builder.Services.AddScoped<IPropertyPictureRepository,PropertyPictureRepository>();
-            builder.Services.AddScoped<IPropertyRepository,PropertyRepository>();
-            builder.Services.AddScoped<IAreaRepository,AreaRepository>();
-            builder.Services.AddScoped<IOrderRepository,OrderRepository>();
-            builder.Services.AddScoped<ISettingRepository,SettingRepository>();
-            builder.Services.AddScoped<ILogoRepository,LogoRepository>();
-            
+            builder.Services.AddHttpContextAccessor();
+
+            builder.Services.AddScoped<IApartmentDocumentRepository, ApartmentDocumentRepository>();
+            builder.Services.AddScoped<IApartmentPictureRepository, ApartmentPictureRepository>();
+            builder.Services.AddScoped<IApartmentRepository, ApartmentRepository>();
+            builder.Services.AddScoped<IPromoterRepository, PromoterRepository>();
+            builder.Services.AddScoped<IPromoterPictureRepository, PromoterPictureRepository>();
+            builder.Services.AddScoped<IPropertyPictureRepository, PropertyPictureRepository>();
+            builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
+            builder.Services.AddScoped<IAreaRepository, AreaRepository>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<ISettingRepository, SettingRepository>();
+            builder.Services.AddScoped<ILogoRepository, LogoRepository>();
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -93,7 +103,9 @@ namespace Propelo
             app.UseAuthorization();
 
             app.UseCors("AllowReactApp");
+            app.UseCors("AllowAll");
 
+            app.UseStaticFiles();
 
             app.MapControllers();
 

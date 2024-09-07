@@ -42,6 +42,12 @@ namespace Propelo.Repository
             return logo;
         }
 
+        public Task<bool> DeleteLogoAsync(int id)
+        {
+            _context.Logos.Remove(_context.Logos.Find(id));
+            return SaveAllAsync();
+        }
+
         public async Task<Logo> GetLogoByIdAsync(int id)
         {
             return await _context.Logos.Where(l => l.Id == id).FirstOrDefaultAsync();

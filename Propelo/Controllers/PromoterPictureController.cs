@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Propelo.DTO;
 using Propelo.Interfaces;
+using Propelo.Models;
 using Propelo.Repository;
 
 namespace Propelo.Controllers
@@ -13,11 +14,13 @@ namespace Propelo.Controllers
     {
         private readonly IPromoterPictureRepository _promoterPictureRepository;
         private readonly IMapper _mapper;
+        
 
         public PromoterPictureController(IPromoterPictureRepository promoterPictureRepository, IMapper mapper)
         {
             _promoterPictureRepository = promoterPictureRepository;
             _mapper = mapper;
+            
         }
 
         [HttpGet]
@@ -41,34 +44,69 @@ namespace Propelo.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePicturet([FromForm] PromoterPictureDTO promoterPictureDto)
         {
-            var picture = await _promoterPictureRepository.CreatePromoterPictureAsync(promoterPictureDto);
+            try
+            {
+                var picture = await _promoterPictureRepository.CreatePromoterPictureAsync(promoterPictureDto);
 
-            if (picture == null)
-                return StatusCode(500, "File Upload Failed");
+                if (picture == null)
+                {
+                    return StatusCode(500, "File Upload Failed");
+                }
 
-            if (await _promoterPictureRepository.SaveAllAsync())
-                return Ok("File Upload Successful");
-
-            return StatusCode(500, "Saving to Database Failed");
+                var createdPicture = await _promoterPictureRepository.SaveAllAsync();
+                if (createdPicture == null)
+                {
+                    return StatusCode(500, "File Upload Failed");
+                }
+                return Ok("File Uploaded Successfully");
+                
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateLogo(int id, [FromForm] PromoterPictureDTO promoterPictureDTO)
+        public async Task<IActionResult> UpdatePicture(int id, [FromForm] PromoterPictureDTO promoterPictureDTO)
         {
             if (id <= 0)
             {
                 return BadRequest("Invalid logo ID.");
             }
 
-            var logo = await _promoterPictureRepository.UpdatePromoterPicture(promoterPictureDTO, id);
+            try
+            {
+                var updatedPicture = await _promoterPictureRepository.UpdatePromoterPicture(promoterPictureDTO, id);
+                if (updatedPicture == null)
+                {
+                    return NotFound();
+                }
 
-            if (logo == null)
-                return StatusCode(500, "File Upload Failed");
+                return Ok("File updated Successful");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (not shown here) and return a suitable error response
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
-            if (await _promoterPictureRepository.SaveAllAsync())
-                return Ok("File Upload Successful");
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePicture(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid Picture ID.");
+            }
 
-            return StatusCode(500, "Saving to Database Failed");
+            if (await _promoterPictureRepository.DeletePromoterPictureAsync(id))
+            {
+                return Ok("File deleted successfully");
+            }
+
+            return StatusCode(500, "Internal server error: Unable to delete file");
         }
     }
 }

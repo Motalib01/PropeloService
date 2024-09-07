@@ -21,6 +21,18 @@ namespace Propelo.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Area>))]
+        public IActionResult GetAreas()
+        {
+            var areas = _mapper.Map<List<AreaDTO>>(_areaRepository.GetAreas());
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(areas);
+        }
+
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]

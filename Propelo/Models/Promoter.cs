@@ -9,6 +9,7 @@
         public string? Email { get; set; }
         public string? Address { get; set; }
 
+
         //one to one
         public PromoterPicture? Picture { get; set; }
         //one to many relationship

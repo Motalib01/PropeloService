@@ -9,6 +9,7 @@ namespace Propelo.Interfaces
         Task<IEnumerable<PromoterPicture>> GetPromoterPicturesAsync();
         Task<PromoterPicture> GetPromoterPictureByIdAsync(int id);
         Task<PromoterPicture> UpdatePromoterPicture(PromoterPictureDTO promoterPictureDTO, int promoterPictureId);
+        Task<bool> DeletePromoterPictureAsync(int id);
         Task<bool> SaveAllAsync();
     }
 }

@@ -92,5 +92,22 @@ namespace Propelo.Controllers
 
             return Ok("Successfully updated");
         }
+
+        [HttpDelete("{promoterId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteApartment(int promoterId)
+        {
+            if (!_promoterRepository.PromoterExists(promoterId))
+                return NotFound();
+
+            var promoterToDelete = _promoterRepository.GetPromoter(promoterId);
+
+            if (!_promoterRepository.DeletePromoter(promoterToDelete))
+                return StatusCode(500, "A problem happened while handling your request.");
+
+            return Ok("Successfully deleted");
+        }
     }
 }
