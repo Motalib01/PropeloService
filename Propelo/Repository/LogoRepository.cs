@@ -11,33 +11,47 @@ namespace Propelo.Repository
     {
         private readonly ApplicationDBContext _context;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LogoRepository(ApplicationDBContext context, IMapper mapper)
+        public LogoRepository(ApplicationDBContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<Logo> CreateLogoAsync(LogoDTO logoDTO)
         {
             var logo = _mapper.Map<Logo>(logoDTO);
 
-            // Save the file to the server
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFile");
+            if (logoDTO.Logo == null || logoDTO.Logo.Length == 0)
+            {
+                throw new InvalidOperationException("No file uploaded.");
+            }
+
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(logoDTO.Logo.FileName);
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Logo");
+
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
-            string filePath = Path.Combine(path, logo.LogoName);
+            string filePath = Path.Combine(path, fileName);
 
             // Save the file to the path
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await logoDTO.Logo.CopyToAsync(stream);
             }
-            logo.LogoPath = filePath;
+
+            var request = _httpContextAccessor.HttpContext.Request;
+            var fileUrl = $"{request.Scheme}://{request.Host}/logo/{fileName}";
+
+            logo.LogoPath = fileUrl;
 
             _context.Logos.Add(logo);
+
+            await _context.SaveChangesAsync();
 
             return logo;
         }
@@ -66,36 +80,39 @@ namespace Propelo.Repository
 
         public async Task<Logo> UpdateLogoAsync(LogoDTO logoDTO, int logoId)
         {
-            // Retrieve the existing logo from the database
-            var logo = await _context.Logos.Where(l => l.Id == logoId).FirstOrDefaultAsync();
+            // Retrieve the existing picture from the database
+            var logo = await _context.Logos.Where(p => p.Id == logoId).FirstOrDefaultAsync();
 
             if (logo == null)
             {
-                // Handle the case where the logo is not found (e.g., throw an exception or return null)
-                throw new Exception("Logo not found");
+                throw new Exception("Picture not found");
             }
 
-            // Update the properties of the logo
+            // Update properties except the picture file path
             _mapper.Map(logoDTO, logo);
 
-            // Check if a new file is provided
-            if (logoDTO.Logo != null)
+            if (logoDTO.Logo != null && logoDTO.Logo.Length > 0)
             {
-                // Save the new file to the server
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFile");
+                // Generate a unique file name for the new picture
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(logoDTO.Logo.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "logo");
+
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }
 
-                // Construct the new file path
-                string newFilePath = Path.Combine(path, logo.LogoName);
+                var filePath = Path.Combine(path, fileName);
 
-                // Save the new file to the path
-                using (var stream = new FileStream(newFilePath, FileMode.Create))
+                // Save the new file
+                using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await logoDTO.Logo.CopyToAsync(stream);
                 }
+
+                // Generate the new public URL
+                var request = _httpContextAccessor.HttpContext.Request;
+                var fileUrl = $"{request.Scheme}://{request.Host}/promoter-pictures/{fileName}";
 
                 // Delete the old file if it exists
                 if (!string.IsNullOrEmpty(logo.LogoPath) && File.Exists(logo.LogoPath))
@@ -103,14 +120,14 @@ namespace Propelo.Repository
                     File.Delete(logo.LogoPath);
                 }
 
-                // Update the logo path to the new file path
-                logo.LogoPath = newFilePath;
+                // Update the picture entity with the new URL
+                logo.LogoPath = fileUrl;
             }
 
-            // Update the logo entity in the context
+            // Update the picture entity in the context
             _context.Logos.Update(logo);
 
-            // Save the changes to the database
+            // Save changes to the database
             await _context.SaveChangesAsync();
 
             return logo;

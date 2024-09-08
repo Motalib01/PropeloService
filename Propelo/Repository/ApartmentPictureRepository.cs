@@ -11,17 +11,19 @@ namespace Propelo.Repository
     {
         private readonly ApplicationDBContext _context;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ApartmentPictureRepository(ApplicationDBContext context, IMapper mapper)
+        public ApartmentPictureRepository(ApplicationDBContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<List<ApartmentPicture>> CreateApartmentPictureAsync(ApartmentPictureDTO apartmentPictureDTO)
         {
             var pictures = new List<ApartmentPicture>();
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+            string path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "apaartment-picture");
 
             if (!Directory.Exists(path))
             {
@@ -30,26 +32,35 @@ namespace Propelo.Repository
 
             foreach (var file in apartmentPictureDTO.Pictures)
             {
-                var picture = new ApartmentPicture
+                if (file == null || file.Length == 0)
                 {
-                    ApartmentId = apartmentPictureDTO.ApartmentId,
-                    PictureName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName),
-                    // Set the PicturePath and PictureSize manually
-                    PictureSize = file.Length
-                };
+                    throw new InvalidOperationException("One or more files are empty.");
+                }
 
-                string filePath = Path.Combine(path, picture.PictureName);
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                var filePath = Path.Combine(path, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
 
-                picture.PicturePath = filePath;
+                var request = _httpContextAccessor.HttpContext.Request;
+                var fileUrl = $"{request.Scheme}://{request.Host}/apartment-pictures/{fileName}";
+
+                var picture = new ApartmentPicture
+                {
+                    ApartmentId = apartmentPictureDTO.ApartmentId,
+                    PictureName = fileName,
+                    PicturePath = fileUrl,
+                    PictureSize = file.Length
+                };
 
                 pictures.Add(picture);
                 _context.ApartmentPictures.Add(picture);
             }
+
+            await _context.SaveChangesAsync();
 
             return pictures;
         }

@@ -41,15 +41,23 @@ namespace Propelo.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePicturet([FromForm] LogoDTO logoDto)
         {
-            var logo = await _logoRepository.CreateLogoAsync(logoDto);
+            try
+            {
+                var logo = await _logoRepository.CreateLogoAsync(logoDto);
 
-            if (logo == null)
-                return StatusCode(500, "File Upload Failed");
+                if (logo == null)
+                    return StatusCode(500, "File Upload Failed");
 
-            if (await _logoRepository.SaveAllAsync())
-                return Ok("File Upload Successful");
+                var createLogo = await _logoRepository.SaveAllAsync();
+                if (createLogo == null)
+                    return NotFound();
 
-            return StatusCode(500, "Saving to Database Failed");
+                return Ok("File Uploaded Successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPut("{id}")]

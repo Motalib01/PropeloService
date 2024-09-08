@@ -15,6 +15,7 @@ namespace Propelo.extensions
             CreateMap<Area, AreaDTO>().ReverseMap();
             CreateMap<Order, OrderDTO>().ReverseMap();
             CreateMap<Setting, SettingDTO>().ReverseMap();
+                
 
             CreateMap<PropertyPictureDTO,PropertyPicture>().ReverseMap();
                 //.ForMember(dest => dest.PictureName, opt=>opt.MapFrom(src=>src.Picture.FileName))

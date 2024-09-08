@@ -26,7 +26,7 @@ namespace Propelo.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<Setting>))]
         public IActionResult GetSettings()
         {
-            var settings = _mapper.Map<List<AreaDTO>>(_settingRepository.GetSettings);
+            var settings = _mapper.Map<List<SettingDTO>>( _settingRepository.GetSettings());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -42,7 +42,6 @@ namespace Propelo.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            //var settingToCreate = _mapper.Map<Setting>(settingCreate);
             var settingToCreate = _mapper.Map<Setting>(settingCreate);
 
             if(!_settingRepository.CreateSetting(settingToCreate))
