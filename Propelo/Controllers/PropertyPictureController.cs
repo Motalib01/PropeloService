@@ -39,6 +39,17 @@ namespace Propelo.Controllers
             return Ok(Picturet);
         }
 
+        [HttpGet("property/{propertyId}")]
+        public async Task<IActionResult> GetPropertyPicturesByPropertyIdAsync(int propertyId)
+        {
+            var picturet = await _propertyPictureRepository.GetPropertyPicturesByPropertyIdAsync(propertyId);
+
+            if (picturet == null)
+                return NotFound();
+
+            return Ok(picturet);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreatePictures([FromForm] PropertyPictureDTO pictureDto)
         {
@@ -70,5 +81,53 @@ namespace Propelo.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePicture(int id, [FromForm] PropertyPictureDTO pictureDto)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid Picture ID.");
+            }
+
+            try
+            {
+                var updatedPicture = await _propertyPictureRepository.UpdatePropertyPictureAsync(pictureDto);
+                if (updatedPicture == null)
+                {
+                    return NotFound("Picture not found.");
+                }
+
+                return Ok("Picture updated successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // Delete a picture by id
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePicture(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid Picture ID.");
+            }
+
+            try
+            {
+                var deletedPicture = await _propertyPictureRepository.DeletePropertyPictureAsync(id);
+                if (deletedPicture == null)
+                {
+                    return NotFound("Picture not found.");
+                }
+
+                return Ok("Picture deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

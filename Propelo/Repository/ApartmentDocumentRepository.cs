@@ -68,6 +68,28 @@ namespace Propelo.Repository
             return documents;
         }
 
+        public async Task<ApartmentDocument> DeleteDocumentAsync(int id)
+        {
+            var document = await _context.ApartmentDocuments.Where(a => a.Id == id).FirstOrDefaultAsync();
+            if (document == null)
+            {
+                throw new KeyNotFoundException("Picture not found.");
+            }
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "apartment-documents", document.DocumentName);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            _context.ApartmentDocuments.Remove(document);
+            await _context.SaveChangesAsync();
+            return document;
+        }
+
+        public async Task<IEnumerable<ApartmentDocument>> GetApartmentDocumentsByApartmentIdAsync(int apartmentId)
+        {
+            return await _context.ApartmentDocuments.Where(a => a.ApartmentId == apartmentId).ToListAsync();
+        }
+
         public async Task<ApartmentDocument> GetDocumentByIdAsync(int id)
         {
             return await _context.ApartmentDocuments.Where(a => a.Id == id).FirstOrDefaultAsync();
@@ -82,6 +104,44 @@ namespace Propelo.Repository
         {
             var save = await _context.SaveChangesAsync();
             return save > 0? true:false ;
+        }
+
+        public async Task<ApartmentDocument> UpdateDocumentAsync(ApartmentDocumentDTO apartmentDocumentDTO)
+        {
+            var document = _context.ApartmentDocuments.Where(a => a.Id == apartmentDocumentDTO.Id).FirstOrDefault();
+            if (document == null)
+            {
+                throw new KeyNotFoundException("Document not found.");
+            }
+
+            if(apartmentDocumentDTO.Documents != null && apartmentDocumentDTO.Documents.Any())
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "apartment-documents", document.DocumentName);
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+
+                var file = apartmentDocumentDTO.Documents.FirstOrDefault();
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "apartment-documents", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
+                var request = _httpContextAccessor.HttpContext.Request;
+                string fileUrl = $"{request.Scheme}://{request.Host}/apartment-documents/{fileName}";
+
+                document.DocumentName = fileName;
+                document.DocumentPath = fileUrl;
+                document.DocumentSize = file.Length;
+            }
+            document.ApartmentId = apartmentDocumentDTO.ApartmentId;
+            await _context.SaveChangesAsync();
+
+            return document;
         }
     }
 }

@@ -39,6 +39,17 @@ namespace Propelo.Controllers
             return Ok(document);
         }
 
+        [HttpGet("apartment/{apartmentId}")]
+        public async Task<IActionResult> GetDocumentByApartmentId(int apartmentId)
+        {
+            var document = await _apartmentDocumentRepository.GetApartmentDocumentsByApartmentIdAsync(apartmentId);
+
+            if (document == null)
+                return NotFound();
+
+            return Ok(document);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateDocument([FromForm] ApartmentDocumentDTO documentDto)
         {
@@ -64,6 +75,53 @@ namespace Propelo.Controllers
             catch (Exception ex)
             {
 
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{Id}")]
+        public async Task<IActionResult> UpdateDocument(int Id, [FromForm] ApartmentDocumentDTO documentDto)
+        {
+            try
+            {
+                if (documentDto.Documents == null || !documentDto.Documents.Any())
+                {
+                    return BadRequest("No files uploaded.");
+                }
+
+                // Call the repository method to save multiple pictures
+                var pictures = await _apartmentDocumentRepository.UpdateDocumentAsync(documentDto);
+
+                if (pictures == null)
+                    return StatusCode(500, "File Upload Failed");
+
+                var createdPictures = await _apartmentDocumentRepository.SaveAllAsync();
+                if (createdPictures == null)
+                    return StatusCode(500, "File Upload Failed");
+
+                return Ok("File Uploaded Successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDocument(int id)
+        {
+            try
+            {
+                var document = await _apartmentDocumentRepository.DeleteDocumentAsync(id);
+                if (document == null)
+                {
+                    return NotFound("Document not found.");
+                }
+                return Ok("File Deleted Successfully");
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
