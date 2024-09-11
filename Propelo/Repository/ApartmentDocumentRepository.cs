@@ -26,7 +26,7 @@ namespace Propelo.Repository
         public async Task<List<ApartmentDocument>> CreateDocumentAsync(ApartmentDocumentDTO apartmentDocumentDTO)
         {
             var documents = new List<ApartmentDocument>();
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "apartment-picture");
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "apartment-documents");
 
             if (!Directory.Exists(path))
             {
@@ -40,7 +40,8 @@ namespace Propelo.Repository
                     throw new InvalidOperationException("One or more files are empty.");
                 }
 
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                //string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string fileName = Path.GetFileName(file.FileName);
                 string filePath = Path.Combine(path, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))

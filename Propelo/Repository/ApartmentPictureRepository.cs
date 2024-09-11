@@ -23,7 +23,7 @@ namespace Propelo.Repository
         public async Task<List<ApartmentPicture>> CreateApartmentPictureAsync(ApartmentPictureDTO apartmentPictureDTO)
         {
             var pictures = new List<ApartmentPicture>();
-            string path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "apaartment-picture");
+            string path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "apartment-pictures");
 
             if (!Directory.Exists(path))
             {
