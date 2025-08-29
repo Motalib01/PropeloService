@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+   api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: propelo-api
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=PropeloDb;User=sa;Password=Your_password123;TrustServerCertificate=True;Encrypt=False;
+    depends_on:
+      - db
+
+   db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: propelo-db
+    ports:
+      - "14333:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Your_password123
+    volumes:
+      - sql_data:/var/opt/mssql
+
+
+volumes:
+  sql_data:

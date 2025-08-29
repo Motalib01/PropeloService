@@ -12,8 +12,8 @@ using Propelo.Data;
 namespace Propelo.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240906190921_propeloV4")]
-    partial class propeloV4
+    [Migration("20250829163423_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

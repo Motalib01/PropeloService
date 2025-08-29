@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Propelo.Migrations
 {
     /// <inheritdoc />
-    public partial class propelo : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,8 +67,7 @@ namespace Propelo.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -82,8 +81,7 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Logo = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -208,6 +206,29 @@ namespace Propelo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PromoterPictures",
+                schema: "Propelo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PictureName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PicturePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PictureSize = table.Column<long>(type: "bigint", nullable: false),
+                    PromoterId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PromoterPictures", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PromoterPictures_Promoters_PromoterId",
+                        column: x => x.PromoterId,
+                        principalSchema: "Propelo",
+                        principalTable: "Promoters",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Properties",
                 schema: "Propelo",
                 columns: table => new
@@ -239,6 +260,29 @@ namespace Propelo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Logos",
+                schema: "Propelo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LogoName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LogoPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LogoSize = table.Column<long>(type: "bigint", nullable: true),
+                    SettingId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Logos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Logos_Settings_SettingId",
+                        column: x => x.SettingId,
+                        principalSchema: "Propelo",
+                        principalTable: "Settings",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Apartments",
                 schema: "Propelo",
                 columns: table => new
@@ -250,6 +294,7 @@ namespace Propelo.Migrations
                     Floor = table.Column<int>(type: "int", nullable: true),
                     Surface = table.Column<double>(type: "float", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Sold = table.Column<bool>(type: "bit", nullable: true),
                     PropertyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -270,7 +315,9 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PictureName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PicturePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PictureSize = table.Column<long>(type: "bigint", nullable: false),
                     PropertyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -291,7 +338,9 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Document = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DocumentName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DocumentPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DocumentSize = table.Column<long>(type: "bigint", nullable: false),
                     ApartmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -312,7 +361,9 @@ namespace Propelo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PictureName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PicturePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PictureSize = table.Column<long>(type: "bigint", nullable: false),
                     ApartmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -445,10 +496,26 @@ namespace Propelo.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Logos_SettingId",
+                schema: "Propelo",
+                table: "Logos",
+                column: "SettingId",
+                unique: true,
+                filter: "[SettingId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_ApartmentID",
                 schema: "Propelo",
                 table: "Orders",
                 column: "ApartmentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PromoterPictures_PromoterId",
+                schema: "Propelo",
+                table: "PromoterPictures",
+                column: "PromoterId",
+                unique: true,
+                filter: "[PromoterId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Properties_PromoterID",
@@ -499,15 +566,19 @@ namespace Propelo.Migrations
                 schema: "Propelo");
 
             migrationBuilder.DropTable(
+                name: "Logos",
+                schema: "Propelo");
+
+            migrationBuilder.DropTable(
                 name: "Orders",
                 schema: "Propelo");
 
             migrationBuilder.DropTable(
-                name: "PropertyPictures",
+                name: "PromoterPictures",
                 schema: "Propelo");
 
             migrationBuilder.DropTable(
-                name: "Settings",
+                name: "PropertyPictures",
                 schema: "Propelo");
 
             migrationBuilder.DropTable(
@@ -516,6 +587,10 @@ namespace Propelo.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers",
+                schema: "Propelo");
+
+            migrationBuilder.DropTable(
+                name: "Settings",
                 schema: "Propelo");
 
             migrationBuilder.DropTable(
